@@ -2,5 +2,17 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
-createApp(App).use(store).use(router).mount('#app')
+// import VueLazyLoad from 'vue3-lazyload'
+import lazyPlugin from 'vue3-lazy'
+import loadingDirective from '@/components/Base/Loading/directive.js'
+// 全局樣式
+import '@/assets/scss/index.scss'
+const app = createApp(App)
+app
+  .use(lazyPlugin, {
+  loading: require('./assets/images/default.png')
+  })
+  .use(store)
+  .use(router)
+  .directive('loading', loadingDirective)
+  .mount('#app')
