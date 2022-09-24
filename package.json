@@ -12,7 +12,7 @@
     "better-scroll": "^2.4.2",
     "core-js": "^3.6.5",
     "js-base64": "^3.7.2",
-    "pinyin": "^3.0.0-alpha.5",
+    "pinyin": "^2.9.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vue3-lazy": "^1.0.0-alpha.1",

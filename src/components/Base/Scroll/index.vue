@@ -5,7 +5,7 @@
 </template>
 <script setup>
 import useScroll from './useScroll.js'
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, defineEmits, defineExpose } from 'vue'
 const props = defineProps({
   click: {
     type: Boolean,
@@ -16,10 +16,11 @@ const props = defineProps({
     default: 0
   }
 })
-
+const emit = defineEmits(['scroll'])
 const rootRef = ref(null)
-useScroll(rootRef, props)
-
+// eslint-disable-next-line
+const scroll = useScroll(rootRef, props, emit)
+defineExpose({ scroll })
 </script>
 <style lang="scss" scoped>
 
