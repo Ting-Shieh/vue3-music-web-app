@@ -12,7 +12,7 @@
         </ul>
       </li>
     </ul>
-    <div class="fixed this"
+    <div class="fixed"
       v-show="fixedTitle"
       :style="fixedStyle">
       <div class="fixed-title">{{fixedTitle}}</div>
