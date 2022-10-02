@@ -4,6 +4,7 @@
       class="item"
       v-for="(song, index) in songs"
       :key="song.id"
+      @click="selectItem(song, index)"
     >
       <div class="rank">
         <span :class="getRankCls(index)">{{ getRankText(index) }}</span>
@@ -25,6 +26,7 @@ export default {
     },
     rank: Boolean
   },
+  emits: ['select'],
   methods: {
     getDesc(song) {
       return `${song.singer}·${song.album}`
@@ -40,6 +42,9 @@ export default {
       if (index > 2) {
         return index + 1
       }
+    },
+    selectItem (song, index) {
+      this.$emit('select', { song, index })
     }
   }
 }

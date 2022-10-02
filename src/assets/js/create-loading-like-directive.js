@@ -38,7 +38,7 @@ export default function createLoadingLikeDirective (Comp) {
       // el.instance = instance
       // 同時處理不同組件
       const name = Comp.name
-      console.log('binding:==>', binding, '--', name)
+      // console.log('binding:==>', binding, '--', name)
       // console.log('Comp:==>', Comp)
       // console.log('el[name]:==>', el[name])
       if (!el[name]) {

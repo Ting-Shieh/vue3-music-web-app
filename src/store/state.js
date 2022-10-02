@@ -6,7 +6,7 @@ const state = {
   // 是否正在撥放
   playing: false,
   // 播放模式
-  playMode: PLAY_MODE.sqeuence,
+  playMode: PLAY_MODE.sequence,
   // 當前播放索引
   currentIndex: 0,
   // 播放狀態

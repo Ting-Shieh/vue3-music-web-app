@@ -1,4 +1,4 @@
-import { PLAY_MODE } from '@/assets/js/constant'
+import { PLAY_MODE } from '@/assets/js/constant.js'
 
 /** actions: 對多個mutation 進行封裝 */
 export function selectPlay({ commit }, { list, index }) {

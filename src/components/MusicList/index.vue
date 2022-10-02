@@ -15,7 +15,7 @@
     </div>
     <base-scroll class="list" :style="scrollStyle" v-loading="loading" v-no-result:[noResultText]="noResult" :probe-type="3" @scroll="onScroll">
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
     </base-scroll>
   </div>
@@ -23,6 +23,7 @@
 <script>
 import SongList from '@/components/Base/SongList'
 import BaseScroll from '@/components/Base/Scroll'
+import { mapActions } from 'vuex'
 const RESERVED_HEIGHT = 40
 export default {
   name: 'MusicList',
@@ -120,7 +121,14 @@ export default {
     },
     onScroll (pos) {
       this.scrollY = -pos.y
-    }
+    },
+    selectItem ({ song, index }) {
+      // 派發actions
+      this.selectPlay({ list: this.songs, index })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   }
 
 }
