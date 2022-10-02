@@ -9,8 +9,8 @@ const mutations = {
     state.sequenceList = list
   },
   // 設置播放列表
-  setPlaylist(state, list) {
-    state.playlist = list
+  setPlayList(state, list) {
+    state.playList = list
   },
   // 修改播放模式
   setPlayMode(state, mode) {

@@ -7,9 +7,13 @@
     <!-- 上方大標 -->
     <h1 class="title">{{ title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImage">
-      <!-- <div class="play-btn-wrapper">
-        <div class="play-btn"></div>
-      </div> -->
+      <!-- 隨機撥放 -->
+      <div class="play-btn-wrapper" :style="playBtnStyle">
+        <div class="play-btn" v-show="songs.length>0" @click="random">
+          <i class="icon-play"></i>
+          <span class="text">隨機撥放全部</span>
+        </div>
+      </div>
       <!-- 圖片蒙板 -->
       <div class="filter" :style="filterStyle"></div>
     </div>
@@ -108,6 +112,16 @@ export default {
     },
     noResult () {
       return !this.loading && !this.songs.length
+    },
+    playBtnStyle () {
+      let display = ''
+      // 滾動到最上方
+      if (this.scrollY >= this.maxTranslateY) {
+        display = 'none'
+      }
+      return {
+        display
+      }
     }
   },
   mounted () {
@@ -126,8 +140,13 @@ export default {
       // 派發actions
       this.selectPlay({ list: this.songs, index })
     },
+    random () {
+      // 派發actions
+      this.randomPlay(this.songs)
+    },
     ...mapActions([
-      'selectPlay'
+      'selectPlay',
+      'randomPlay'
     ])
   }
 
@@ -174,19 +193,30 @@ export default {
     // padding-top:70%;
     .play-btn-wrapper{
       position: absolute;
-        bottom: 20px;
-        z-index: 10;
-        width: 100%;
+      bottom: 20px;
+      z-index: 10;
+      width: 100%;
       .play-btn{
         box-sizing: border-box;
-          width: 135px;
-          padding: 7px 0;
-          margin: 0 auto;
-          text-align: center;
-          border: 1px solid $color-theme;
-          color: $color-theme;
-          border-radius: 100px;
-          font-size: 0;
+        width: 135px;
+        padding: 7px 0;
+        margin: 0 auto;
+        text-align: center;
+        border: 1px solid $color-theme;
+        color: $color-theme;
+        border-radius: 100px;
+        font-size: 0;
+        .icon-play {
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 6px;
+          font-size: $font-size-medium-x;
+        }
+        .text {
+          display: inline-block;
+          vertical-align: middle;
+          font-size: $font-size-small;
+        }
       }
     }
     .filter {
