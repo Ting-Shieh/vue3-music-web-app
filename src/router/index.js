@@ -8,7 +8,13 @@ const routes = [
   {
     path: '/singer',
     name: 'Singer',
-    component: () => import('../views/Singer.vue')
+    component: () => import('../views/Singer.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('../views/SingerDetail.vue')
+      }
+    ]
   },
   {
     path: '/search',

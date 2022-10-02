@@ -5,7 +5,7 @@
         <!-- 字幕排序 -->
         <h2 class="title">{{ group.title }}</h2>
         <ul>
-          <li class="item" v-for="item in group.list" :key="item.id">
+          <li class="item" v-for="item in group.list" :key="item.id" @click="onItemClick(item)">
             <img class="avatar" v-lazy="item.pic" />
             <span class="name">{{ item.name }}</span>
           </li>
@@ -41,7 +41,7 @@
 import BaseScroll from '@/components/Base/Scroll'
 import useFixed from './useFixed.js'
 import useShortcut from './useShortcut.js'
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 const props = defineProps({
   data: {
     type: Array,
@@ -50,7 +50,11 @@ const props = defineProps({
 })
 const { groupRef, onScroll, currentIndex, fixedTitle, fixedStyle } = useFixed(props)
 const { shortcutList, onShortcutTouchStart, onShortcutTouchMove, scrollRef } = useShortcut(props, groupRef)
-
+const emit = defineEmits(['select'])
+const onItemClick = (item) => {
+  // 派發給外部
+  emit('select', item)
+}
 </script>
 <style lang="scss" scoped>
 .index-list {
