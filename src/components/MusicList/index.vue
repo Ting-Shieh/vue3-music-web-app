@@ -13,7 +13,7 @@
       <!-- 圖片蒙板 -->
       <div class="filter" :style="filterStyle"></div>
     </div>
-    <base-scroll class="list" :style="scrollStyle" v-loading="loading" :probe-type="3" @scroll="onScroll">
+    <base-scroll class="list" :style="scrollStyle" v-loading="loading" v-no-result:[noResultText]="noResult" :probe-type="3" @scroll="onScroll">
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -38,7 +38,12 @@ export default {
     title: String,
     pic: String,
     // 該組件無數據獲取邏輯
-    loading: Boolean
+    loading: Boolean,
+    // 無相關資料時的字樣
+    noResultText: {
+      type: String,
+      default: '抱歉，沒有找到可撥放歌曲。'
+    }
   },
   data () {
     return {
@@ -99,6 +104,9 @@ export default {
       return {
         backdropFilter: `blur(${blur}px)`
       }
+    },
+    noResult () {
+      return !this.loading && !this.songs.length
     }
   },
   mounted () {
