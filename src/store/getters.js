@@ -1,3 +1,4 @@
 export const currentSong = (state) => {
-  return state.playlist[state.currentIndex] || {}
+  // 初始時取不到給予空對象
+  return state.playList[state.currentIndex] || {}
 }
