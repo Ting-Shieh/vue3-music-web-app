@@ -23,6 +23,9 @@ const mutations = {
   // 設置是否全螢幕播放
   setFullScreen(state, fullScreen) {
     state.fullScreen = fullScreen
+  },
+  setFavoriteList (state, list) {
+    state.favoriteList = list
   }
 }
 

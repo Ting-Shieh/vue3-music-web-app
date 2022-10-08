@@ -12,9 +12,21 @@ module.exports = {
     }
   },
   devServer: {
+    // https://webpack.js.org/configuration/dev-server/#devserversockhost
+    // sockHost: '192.168.68.102:8080',
+    // disableHostCheck: true,
     before (app) {
       registerRouter(app)
     }
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://192.168.68.102:8080',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // }
   },
   configureWebpack: (config) => {
     if (process.env.npm_config_report) {

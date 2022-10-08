@@ -15,6 +15,7 @@ export function processSongs(songs) {
       song.url = map[song.mid]
       return song
     }).filter((song) => {
+      console.log('song conatain: ', song)
       return song.url // && song.url.indexOf('vkey') > -1
       // return song.url && song.url.indexOf('vkey') > -1
     })

@@ -21,3 +21,16 @@ function swap (arr, i, j) {
   arr[i] = arr[j]
   arr[j] = temp
 }
+
+/**
+ * 將毫秒格式化為mm:ss
+ * @param {*} interval 毫秒
+ */
+export function formatTime(interval) {
+  // 向下取整
+  interval = interval | 0
+  // mm
+  const minute = ((interval / 60 | 0) + '').padStart(2, '0') // +'' 轉成字符串
+  const second = ((interval % 60) + '').padStart(2, '0')
+  return `${minute}:${second}`
+}

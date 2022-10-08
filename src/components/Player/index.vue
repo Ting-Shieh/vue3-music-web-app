@@ -13,6 +13,14 @@
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
         <div class="bottom">
+          <!-- progress -->
+          <div class="progress-wrapper">
+            <span class="time time-l">{{formatTime(currentTime)}}</span>
+            <div class="progress-bar-wrapper">
+              <progress-bar :progress="progress"></progress-bar>
+            </div>
+            <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
+          </div>
           <div class="operators">
             <div class="icon i-left">
               <i @click="changeMode" :class="modeIcon"></i>
@@ -27,13 +35,13 @@
               <i @click="next" class="icon-next"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon-not-favorite"></i>
+              <i @click.prevent="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i>
             </div>
            </div>
         </div>
       </template>
     </div>
-    <audio ref="audioRef" @canplay="ready" @pause="pause" @error="error"></audio>
+    <audio ref="audioRef" @canplay="ready" @pause="pause" @error="error" @timeupdate="updateTime"></audio>
   </div>
 </template>
 
@@ -41,9 +49,15 @@
 import { computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './useMode.js'
+import useFavorite from './useFavorite.js'
+import ProgressBar from './ProgressBar.vue'
+import { formatTime } from '@/assets/js/util.js'
+//
+// import testSound from '@/assets/music/test-song-1.mp3'
 // data
 const audioRef = ref(null)
 const songReady = ref(false)
+const currentTime = ref(0) // 當前歌曲撥放時長
 // vuex
 const store = useStore()
 const fullScreen = computed(() => store.state.fullScreen)
@@ -53,9 +67,11 @@ const currentIndex = computed(() => store.state.currentIndex)
 const playList = computed(() => store.state.playList)
 // hooks
 const { modeIcon, changeMode } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')
+const progress = computed(() => currentTime.value / currentSong.value.duration)
 
 // watch
 watch(currentSong, (newSong) => {
@@ -63,10 +79,11 @@ watch(currentSong, (newSong) => {
     return
   }
   // 歌曲發生變化
+  currentTime.value = 0
   songReady.value = false
   const audioEl = audioRef.value
   // console.log('newSong', newSong)
-  audioEl.src = newSong.url
+  audioEl.src = 'http://soundbible.com/mp3/muscle-car-daniel_simon.mp3' // newSong.url
   audioEl.muted = false
   audioEl.play()
 })
@@ -75,7 +92,7 @@ watch(playing, (newPlaying) => {
     return
   }
   const audioEl = audioRef.value
-  audioEl ? audioEl.play() : audioEl.pause()
+  newPlaying ? audioEl.play() : audioEl.pause()
 })
 
 // methods
@@ -153,6 +170,10 @@ const loop = () => {
   audioEl.play()
   store.commit('setPlayingState', true)
 }
+
+const updateTime = (e) => {
+  currentTime.value = e.target.currentTime
+}
 </script>
 
 <style scoped lang='scss'>
@@ -216,6 +237,29 @@ const loop = () => {
       position: absolute;
       bottom: 50px;
       width: 100%;
+      .progress-wrapper {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        margin: 0px auto;
+        padding: 10px 0;
+        .time {
+          color: $color-text;
+          font-size: $font-size-small;
+          flex: 0 0 40px;
+          line-height: 30px;
+          width: 40px;
+          &.time-l {
+            text-align: left;
+          }
+          &.time-r {
+            text-align: right;
+          }
+        }
+        .progress-bar-wrapper {
+          flex: 1;
+        }
+      }
       .operators {
         display: flex;
         align-items: center;
