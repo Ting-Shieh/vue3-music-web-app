@@ -1,6 +1,6 @@
 <template>
-  <div class="progress-bar">
-    <!-- 整個bar -->
+  <div class="progress-bar" @click="onClick">
+    <!-- 整個bar 底色灰色-->
     <div class="bar-inner">
       <!-- 黃色進度 -->
       <div class="progress" :style="progressStyle" ref="progressRef"></div>
@@ -77,9 +77,31 @@ export default {
       const progress = this.$refs.progressRef.clientWidth / barWidth
       // 拖移btn結束時，同時影響歌曲
       this.$emit('progress-changed', progress)
+    },
+    onClick (e) {
+      console.log('$el:', this.$el)
+      console.log('e.pageX:', e.pageX)
+      console.log('$el.getBoundingClientRect():', this.$el.getBoundingClientRect())
+      // https://shubo.io/get-bounding-client-rect/
+      // 獲取點擊在進度條上的位置(從進度條左邊起點到點擊位置的距離)
+      const rect = this.$el.getBoundingClientRect()
+      const offset = e.pageX - rect.left
+      console.log('$el.clientWidth:', this.$el.clientWidth)
+      console.log('progressBtnWidth:', progressBtnWidth)
+      console.log('offset:', offset)
+
+      //
+      const barWidth = this.$el.clientWidth - progressBtnWidth
+      const progress = offset / barWidth
+      console.log('barWidth:', barWidth)
+      console.log('progress:', progress)
+      //
+      this.$emit('progress-changed', progress)
     }
   },
   created () {
+    // 不需要觀測響應，只需共享，故不用設在data
+    // 不會造成性能浪費
     this.touch = {}
   }
 }

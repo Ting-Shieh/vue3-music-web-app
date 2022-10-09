@@ -17,7 +17,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :progress="progress"></progress-bar>
+              <progress-bar :progress="progress" @progress-changing="onProgressChanging" @progress-changed="onProgressChanged"></progress-bar>
             </div>
             <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
           </div>
@@ -41,7 +41,7 @@
         </div>
       </template>
     </div>
-    <audio ref="audioRef" @canplay="ready" @pause="pause" @error="error" @timeupdate="updateTime"></audio>
+    <audio ref="audioRef" @canplay="ready" @pause="pause" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
 
@@ -52,18 +52,21 @@ import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import ProgressBar from './ProgressBar.vue'
 import { formatTime } from '@/assets/js/util.js'
+import { PLAY_MODE } from '@/assets/js/constant.js'
 //
-// import testSound from '@/assets/music/test-song-1.mp3'
+import testSound from '@/assets/music/test-song-1.mp3'
 // data
 const audioRef = ref(null)
 const songReady = ref(false)
 const currentTime = ref(0) // 當前歌曲撥放時長
+let progressChanging = false
 // vuex
 const store = useStore()
 const fullScreen = computed(() => store.state.fullScreen)
 const currentSong = computed(() => store.getters.currentSong)
 const playing = computed(() => store.state.playing)
 const currentIndex = computed(() => store.state.currentIndex)
+const playMode = computed(() => store.state.playMode)
 const playList = computed(() => store.state.playList)
 // hooks
 const { modeIcon, changeMode } = useMode()
@@ -83,7 +86,9 @@ watch(currentSong, (newSong) => {
   songReady.value = false
   const audioEl = audioRef.value
   // console.log('newSong', newSong)
-  audioEl.src = 'http://soundbible.com/mp3/muscle-car-daniel_simon.mp3' // newSong.url
+  // audioEl.src = 'http://soundbible.com/mp3/muscle-car-daniel_simon.mp3' // newSong.url
+  // audioEl.src = newSong.url
+  audioEl.src = testSound
   audioEl.muted = false
   audioEl.play()
 })
@@ -161,6 +166,21 @@ const next = () => {
     }
   }
 }
+const updateTime = (e) => {
+  // 不是拖曳狀態才執行修改
+  if (!progressChanging) {
+    currentTime.value = e.target.currentTime
+  }
+}
+// 歌曲播放完成
+const end = () => {
+  currentTime.value = 0
+  if (playMode.value === PLAY_MODE.loop) {
+    loop()
+  } else {
+    next()
+  }
+}
 /** 循環播放當前歌曲 */
 const loop = () => {
   // get dom
@@ -171,8 +191,31 @@ const loop = () => {
   store.commit('setPlayingState', true)
 }
 
-const updateTime = (e) => {
-  currentTime.value = e.target.currentTime
+// ProgressBar cpt
+// 注意:
+// 歌曲正在撥放中本身就會觸法updateTime() 修改 currentTime.value
+// 在拖動同時觸發onProgressChanging() 修改 currentTime.value
+/**
+ * 時時修改進度
+ * @param {*} progress
+ */
+const onProgressChanging = (progress) => {
+  // 時時修改進度
+  progressChanging = true
+  currentTime.value = currentSong.value.duration * progress
+}
+/**
+ * 放開按鈕修改播放時間
+ * @param {*} progress
+ */
+const onProgressChanged = (progress) => {
+  // 修改播放時間
+  progressChanging = false
+  audioRef.value.currentTime = currentTime.value = currentSong.value.duration * progress
+  // 若為暫停模式變為撥放
+  if (!playing.value) {
+    store.commit('setPlayingState', true)
+  }
 }
 </script>
 
