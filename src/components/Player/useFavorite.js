@@ -1,3 +1,6 @@
+/**
+ * 收藏相關hook
+ */
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { save, remove } from '@/assets/js/array-store.js'

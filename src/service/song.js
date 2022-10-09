@@ -23,12 +23,18 @@ export function processSongs(songs) {
 }
 
 const lyricMap = {}
-
-export function getLyric(song) {
+/**
+ * 獲取歌詞
+ * @param {*} song
+ * @returns
+ */
+export function getLyric (song) {
+  // 優先:歌曲對象本身找
   if (song.lyric) {
     return Promise.resolve(song.lyric)
   }
   const mid = song.mid
+  // 次之:不同對象可能代表同一首歌
   const lyric = lyricMap[mid]
   if (lyric) {
     return Promise.resolve(lyric)
@@ -37,7 +43,7 @@ export function getLyric(song) {
   return get('/api/getLyric', {
     mid
   }).then((result) => {
-    const lyric = result ? result.lyric : '[00:00:00]该歌曲暂时无法获取歌词'
+    const lyric = result ? result.lyric : '[00:00:00]該歌曲暫時無法獲取歌詞'
     lyricMap[mid] = lyric
     return lyric
   })

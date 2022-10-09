@@ -60,6 +60,7 @@ import { useStore } from 'vuex'
 import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import useCD from './useCD.js'
+import useLyric from './useLyric.js'
 import ProgressBar from './ProgressBar.vue'
 import { formatTime } from '@/assets/js/util.js'
 import { PLAY_MODE } from '@/assets/js/constant.js'
@@ -82,6 +83,7 @@ const playList = computed(() => store.state.playList)
 const { modeIcon, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdRef, cdImageRef } = useCD() // cdRef, cdImageRef 定義在鉤子裡面
+useLyric()
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')

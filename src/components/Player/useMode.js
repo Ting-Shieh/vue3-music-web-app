@@ -1,3 +1,6 @@
+/**
+ * 播放模式切換相關hook
+ */
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { PLAY_MODE } from '@/assets/js/constant.js'
