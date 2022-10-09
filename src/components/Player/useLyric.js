@@ -5,8 +5,19 @@ import { getLyric } from '@/service/song.js'
 import { useStore } from 'vuex'
 import { computed, watch, ref } from 'vue'
 import Lyric from 'lyric-parser'
-export default function useLyric () {
+
+/**
+ * 歌詞相關hook
+ * @param {*} songReady: 歌曲是否已緩衝好 | currentTime: 當前播放時間
+ * @returns
+ */
+export default function useLyric ({ songReady, currentTime }) {
+  // data
   const currentLyric = ref(null)
+  const currentLineNum = ref(0)
+  const lyricScrollRef = ref(null)
+  const lyricListRef = ref(null)
+  // vuex
   const store = useStore()
   const currentSong = computed(() => store.getters.currentSong)
 
@@ -18,6 +29,7 @@ export default function useLyric () {
 
     // 獲取歌詞
     const lyric = await getLyric(newSong)
+    // console.log(lyric)
     store.commit('addSongLyric', { song: newSong, lyric })
 
     // [注意!!]
@@ -30,9 +42,54 @@ export default function useLyric () {
       return
     }
     // 解析歌詞
+    // 2個異步過程 (1)await getLyric(newSong)。(2) 播放過程中會觸發:audio @canplay。
     currentLyric.value = new Lyric(lyric, handleLyric)
-    // console.log(lyric)
+    if (songReady.value) {
+      playLyric()
+    }
   })
+  /**
+   * 一行行翻譯
+   */
+  function handleLyric ({ lineNum }) {
+    currentLineNum.value = lineNum
 
-  function handleLyric () {}
+    // 組件實例
+    const scrollComp = lyricScrollRef.value
+    // list element dom
+    const listEl = lyricListRef.value
+
+    // v-if="currentLyric" 控制，故可能為空
+    if (!listEl) {
+      return
+    }
+
+    //
+    if (lineNum > 5) {
+      if (lineNum > 5) {
+        const lineEl = listEl.children[lineNum - 5] // - 5 位置偏中間
+        // 滾動到特定 Element, 1秒
+        scrollComp.scroll.scrollToElement(lineEl, 1000)
+      } else {
+        // 滾動到頂部
+        scrollComp.scroll.scrollTo(0, 0, 1000)
+      }
+    }
+  }
+  /**
+     * 播放歌詞
+     */
+   function playLyric () {
+    const currentLyricVal = currentLyric.value
+    if (currentLyricVal) {
+      currentLyricVal.seek(currentTime.value * 1000)
+    }
+  }
+  return {
+    currentLyric,
+    currentLineNum,
+    playLyric, // 防止 songReady.value = false，audio @canplay="ready"會偵測出發 songReady.value = true，再次執行playLyric()
+    lyricScrollRef,
+    lyricListRef
+  }
 }
