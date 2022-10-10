@@ -17,6 +17,8 @@ export default function useLyric ({ songReady, currentTime }) {
   const currentLineNum = ref(0)
   const lyricScrollRef = ref(null)
   const lyricListRef = ref(null)
+  const pureMusicLyric = ref('')
+
   // vuex
   const store = useStore()
   const currentSong = computed(() => store.getters.currentSong)
@@ -49,8 +51,14 @@ export default function useLyric ({ songReady, currentTime }) {
     // 解析歌詞
     // 2個異步過程 (1)await getLyric(newSong)。(2) 播放過程中會觸發:audio @canplay。
     currentLyric.value = new Lyric(lyric, handleLyric)
-    if (songReady.value) {
-      playLyric()
+    // 是否有lyric
+    const hasLyric = currentLyric.value.lines.length
+    if (hasLyric) {
+      if (songReady.value) {
+        playLyric()
+      }
+    } else {
+      pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
     }
   })
   /**
@@ -103,6 +111,7 @@ export default function useLyric ({ songReady, currentTime }) {
     playLyric, // 防止 songReady.value = false，audio @canplay="ready"會偵測觸發 songReady.value = true，再次執行playLyric()
     stopLyric,
     lyricScrollRef,
-    lyricListRef
+    lyricListRef,
+    pureMusicLyric
   }
 }
