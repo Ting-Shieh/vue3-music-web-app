@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      dashArray: Math.PI * 100
+      dashArray: Math.PI * 100 // 2*半徑*PI
     }
   },
   computed: {

@@ -21,7 +21,12 @@
           </div>
         </div>
       </div> -->
-      <!-- <div class="control"></div>
+      <div class="control">
+        <progress-circle :radius="32" :progress="progress">
+          <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
+        </progress-circle>
+      </div>
+      <!--
       <div class="control">
         <i class="icon-playlist"></i>
       </div> -->
@@ -29,19 +34,33 @@
   </transition>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import useCD from './useCD.js'
+import ProgressCircle from './ProgressCircle.vue'
 //  vuex
 const store = useStore()
 const fullScreen = computed(() => store.state.fullScreen)
 const currentSong = computed(() => store.getters.currentSong)
+const playing = computed(() => store.state.playing)
 // hook
 const { cdCls, cdRef, cdImageRef } = useCD()
-
+// computed
+const miniPlayIcon = computed(() => playing.value ? 'icon-pause-mini' : 'icon-play-mini')
+// props
+defineProps({
+  progress: {
+    type: Number,
+    default: 0
+  },
+  togglePlay: {
+    type: Function
+  }
+})
 const showNormalPlayer = () => {
   store.commit('setFullScreen', true)
 }
+
 </script>
 <style lang="scss" scoped>
  .mini-player {
@@ -71,6 +90,26 @@ const showNormalPlayer = () => {
           animation-play-state: paused;
         }
       }
+    }
+  }
+  .control {
+    flex: 0 0 30px;
+    width: 30px;
+    padding: 0 10px;
+    right: 0;
+    position: absolute;
+    .icon-playlist {
+      position: relative;
+      top: -2px;
+      font-size: 28px;
+      color: $color-theme-d;
+    }
+    .icon-mini {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: $color-theme-d;
+      font-size: 32px;
     }
   }
   .name {
