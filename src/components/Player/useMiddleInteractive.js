@@ -14,10 +14,28 @@ export default function useMiddleInteractive () {
 
   function onMiddleTouchStart (e) {
     touch.startX = e.touches[0].pageX
+    touch.startY = e.touches[0].pageY // 用於處理歌詞會斜向滑動問題
+    touch.directionLocked = '' // 處理方向鎖
   }
   function onMiddleTouchMove (e) {
     // 手指拖動偏移距離(右->左為負值 | 左->右為正值)
     const deltaX = e.touches[0].pageX - touch.startX
+
+    // 用於處理歌詞會斜向滑動問題
+    const deltaY = e.touches[0].pageY - touch.startY
+
+    // 對比
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
+    if (!touch.directionLocked) {
+      touch.directionLocked = absDeltaX >= absDeltaY ? 'h' : 'v'
+    }
+
+    // 執行方向鎖
+    if (touch.directionLocked === 'v') {
+      return
+    }
+
     // 初始位移 0 or 屏幕寬度位移
     const left = currentView === 'cd' ? 0 : -window.innerWidth
 
@@ -44,12 +62,10 @@ export default function useMiddleInteractive () {
 
     // 修改樣式
     middleLStyle.value = {
-      opacity: 1 - touch.percent,
-      transitionDuration: '0ms'
+      opacity: 1 - touch.percent
     }
     middleRStyle.value = {
-      transform: `translate3d(${offsetWidth}px, 0, 0)`,
-      transitionDuration: '0ms'
+      transform: `translate3d(${offsetWidth}px, 0, 0)`
     }
   }
   /** 鬆開手指，修改樣式 */
