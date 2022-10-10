@@ -18,6 +18,7 @@ export default function useLyric ({ songReady, currentTime }) {
   const lyricScrollRef = ref(null)
   const lyricListRef = ref(null)
   const pureMusicLyric = ref('')
+  const playingLyric = ref('')
 
   // vuex
   const store = useStore()
@@ -30,9 +31,7 @@ export default function useLyric ({ songReady, currentTime }) {
     }
 
     // 切換歌曲前先暫停播放歌詞(此時是上首歌)
-    stopLyric()
-    currentLyric.value = null
-    currentLineNum.value = 0
+    stopLyricAndInit()
 
     // 獲取歌詞
     const lyric = await getLyric(newSong)
@@ -58,15 +57,15 @@ export default function useLyric ({ songReady, currentTime }) {
         playLyric()
       }
     } else {
-      pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
+      playingLyric.value = pureMusicLyric.value = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
     }
   })
   /**
    * 一行行翻譯
    */
-  function handleLyric ({ lineNum }) {
-    currentLineNum.value = lineNum
-
+  function handleLyric ({ lineNum, txt }) {
+    currentLineNum.value = lineNum // 當前播放歌詞行數
+    playingLyric.value = txt // 當前播放歌詞文案
     // 組件實例
     const scrollComp = lyricScrollRef.value
     // list element dom
@@ -105,6 +104,14 @@ export default function useLyric ({ songReady, currentTime }) {
       currentLyricVal.stop()
     }
   }
+  /** 切換歌曲前先暫停播放歌詞(此時是上首歌) */
+  function stopLyricAndInit () {
+    stopLyric()
+    currentLyric.value = null
+    currentLineNum.value = 0
+    pureMusicLyric.value = ''
+    playingLyric.value = ''
+  }
   return {
     currentLyric,
     currentLineNum,
@@ -112,6 +119,7 @@ export default function useLyric ({ songReady, currentTime }) {
     stopLyric,
     lyricScrollRef,
     lyricListRef,
-    pureMusicLyric
+    pureMusicLyric,
+    playingLyric
   }
 }
