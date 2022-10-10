@@ -13,7 +13,7 @@
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
         <div class="middle">
-          <div class="middle-l" v-show="false">
+          <div class="middle-l">
             <div class="cd-wrapper">
               <div ref="cdRef" class="cd">
                 <img ref="cdImageRef" :src="currentSong.pic" class="image" :class="cdCls">
@@ -43,6 +43,11 @@
           </base-scroll>
         </div>
         <div class="bottom">
+          <!-- 左右移動層標示 -->
+          <div class="dor-wrapper this">
+            <span class="dot" :class="{'active': currentShow === 'cd'}"></span>
+            <span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
+          </div>
           <!-- progress -->
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
@@ -410,6 +415,24 @@ const onProgressChanged = (progress) => {
       position: absolute;
       bottom: 50px;
       width: 100%;
+      .dot-wrapper {
+        text-align: center;
+        font-size: 0;
+        .dot {
+          display: inline-block;
+          vertical-align: middle;
+          margin: 0 4px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: $color-text-l;
+          &.active {
+            width: 20px;
+            border-radius: 5px;
+            background: $color-text-ll;
+          }
+        }
+      }
       .progress-wrapper {
         display: flex;
         align-items: center;
