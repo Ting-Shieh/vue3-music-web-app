@@ -241,6 +241,9 @@ const onProgressChanging = (progress) => {
   // 時時修改進度
   progressChanging = true
   currentTime.value = currentSong.value.duration * progress
+  // 進度條"變動中"先暫停歌詞
+  playLyric() // 先偏移到當前拖動位置(因playLyric()來自currentTime.做計算)
+  stopLyric() // 不鬆開手指前，則保留在該位置
 }
 /**
  * 放開按鈕修改播放時間
@@ -254,6 +257,8 @@ const onProgressChanged = (progress) => {
   if (!playing.value) {
     store.commit('setPlayingState', true)
   }
+  // 進度條"停止變動"繼續播放歌詞，並更新到新位置
+  playLyric()
 }
 </script>
 
