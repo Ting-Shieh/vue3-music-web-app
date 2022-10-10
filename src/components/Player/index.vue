@@ -12,8 +12,14 @@
           <h1 class="title">{{currentSong.name}}</h1>
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
-        <div class="middle">
-          <div class="middle-l">
+        <div
+          class="middle"
+          @touchstart.prevent="onMiddleTouchStart"
+          @touchmove.prevent="onMiddleTouchMove"
+          @touchend.prevent="onMiddleTouchEnd"
+        >
+          <!-- 中間視圖層手指交互-唱片 -->
+          <div class="middle-l" :style="middleLStyle">
             <div class="cd-wrapper">
               <div ref="cdRef" class="cd">
                 <img ref="cdImageRef" :src="currentSong.pic" class="image" :class="cdCls">
@@ -23,7 +29,8 @@
               <div class="playing-lyric">{{playingLyric}}</div>
             </div>
           </div>
-          <base-scroll class="middle-r" ref="lyricScrollRef">
+          <!-- 中間視圖層手指交互-歌詞 -->
+          <base-scroll class="middle-r" :style="middleRStyle" ref="lyricScrollRef">
             <div class="lyric-wrapper">
               <div v-if="currentLyric" ref="lyricListRef">
                 <p
@@ -43,9 +50,9 @@
           </base-scroll>
         </div>
         <div class="bottom">
-          <!-- 左右移動層標示 -->
+          <!-- 左右移動層標示(中間視圖層手指交互) -->
           <div class="dor-wrapper this">
-            <span class="dot" :class="{'active': currentShow === 'cd'}"></span>
+            <span class="dot this" :class="{'active': currentShow === 'cd'}"></span>
             <span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
           </div>
           <!-- progress -->
@@ -87,6 +94,7 @@ import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import useCD from './useCD.js'
 import useLyric from './useLyric.js'
+import useMiddleInteractive from './useMiddleInteractive.js'
 import ProgressBar from './ProgressBar.vue'
 import BaseScroll from '@/components/Base/Scroll'
 import { formatTime } from '@/assets/js/util.js'
@@ -111,6 +119,7 @@ const { modeIcon, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdRef, cdImageRef } = useCD() // cdRef, cdImageRef 定義在鉤子裡面
 const { currentLyric, currentLineNum, playLyric, stopLyric, lyricScrollRef, lyricListRef, pureMusicLyric, playingLyric } = useLyric({ songReady, currentTime })
+const { currentShow, middleLStyle, middleRStyle, onMiddleTouchStart, onMiddleTouchMove, onMiddleTouchEnd } = useMiddleInteractive()
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')
