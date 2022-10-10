@@ -1,5 +1,5 @@
 <template>
-  <div class='player'>
+  <div class='player' v-show="playList.length">
     <div class="normal-player" v-show="fullScreen">
       <template v-if="currentSong">
         <div class="background">
@@ -83,6 +83,7 @@
         </div>
       </template>
     </div>
+    <mini-player></mini-player>
     <audio ref="audioRef" @canplay="ready" @pause="pause" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
@@ -96,6 +97,7 @@ import useCD from './useCD.js'
 import useLyric from './useLyric.js'
 import useMiddleInteractive from './useMiddleInteractive.js'
 import ProgressBar from './ProgressBar.vue'
+import MiniPlayer from './MiniPlayer.vue'
 import BaseScroll from '@/components/Base/Scroll'
 import { formatTime } from '@/assets/js/util.js'
 import { PLAY_MODE } from '@/assets/js/constant.js'

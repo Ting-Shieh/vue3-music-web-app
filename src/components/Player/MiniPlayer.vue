@@ -2,8 +2,8 @@
   <transition name="mini">
     <div class="mini-player" v-show="!fullScreen">
       <div class="cd-wrapper">
-        <div class="cd">
-          <img :src="currentSong.pic" width="40" height="40"></div>
+        <div ref="cdRef" class="cd">
+          <img ref="cdImageRef" :class="cdCls" :src="currentSong.pic" width="40" height="40"></div>
       </div>
       <div>
         <h2 class="name">{{currentSong.name}}</h2>
@@ -24,7 +24,17 @@
     </div>
   </transition>
 </template>
-<script></script>
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import useCD from './useCD.js'
+//  vuex
+const store = useStore()
+const fullScreen = computed(() => store.state.fullScreen)
+const currentSong = computed(() => store.getters.currentSong)
+// hook
+const { cdCls, cdRef, cdImageRef } = useCD()
+</script>
 <style lang="scss" scoped>
  .mini-player {
   display: flex;
