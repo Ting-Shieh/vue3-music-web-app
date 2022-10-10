@@ -1,6 +1,10 @@
 <template>
   <transition name="mini">
-    <div class="mini-player" v-show="!fullScreen">
+    <div
+    class="mini-player"
+    v-show="!fullScreen"
+    @click="showNormalPlayer"
+    >
       <div class="cd-wrapper">
         <div ref="cdRef" class="cd">
           <img ref="cdImageRef" :class="cdCls" :src="currentSong.pic" width="40" height="40"></div>
@@ -34,6 +38,10 @@ const fullScreen = computed(() => store.state.fullScreen)
 const currentSong = computed(() => store.getters.currentSong)
 // hook
 const { cdCls, cdRef, cdImageRef } = useCD()
+
+const showNormalPlayer = () => {
+  store.commit('setFullScreen', true)
+}
 </script>
 <style lang="scss" scoped>
  .mini-player {
