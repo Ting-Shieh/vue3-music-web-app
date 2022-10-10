@@ -50,6 +50,7 @@ export default {
     // 組件渲染後
     progress (newProgress) {
       // 整個進度條寬度
+      // 當fullScreen=false，normal-player dom 會display=none，該情快下調用this.$el api 計算clientWidth會出錯
       const barWidth = this.$el.clientWidth - progressBtnWidth
       this.offset = barWidth * newProgress
     }

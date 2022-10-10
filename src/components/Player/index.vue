@@ -1,5 +1,6 @@
 <template>
   <div class='player' v-show="playList.length">
+    <!-- normal-player dom -->
     <div class="normal-player" v-show="fullScreen">
       <template v-if="currentSong">
         <div class="background">
