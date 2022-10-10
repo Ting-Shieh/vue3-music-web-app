@@ -101,7 +101,7 @@ const playList = computed(() => store.state.playList)
 const { modeIcon, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdRef, cdImageRef } = useCD() // cdRef, cdImageRef 定義在鉤子裡面
-const { currentLyric, currentLineNum, playLyric, lyricScrollRef, lyricListRef } = useLyric({ songReady, currentTime })
+const { currentLyric, currentLineNum, playLyric, stopLyric, lyricScrollRef, lyricListRef } = useLyric({ songReady, currentTime })
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')
@@ -128,7 +128,13 @@ watch(playing, (newPlaying) => {
     return
   }
   const audioEl = audioRef.value
-  newPlaying ? audioEl.play() : audioEl.pause()
+  if (newPlaying) {
+    audioEl.play()
+    playLyric()
+  } else {
+    audioEl.pause()
+    stopLyric()
+  }
 })
 
 // methods

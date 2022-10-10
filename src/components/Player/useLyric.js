@@ -77,18 +77,26 @@ export default function useLyric ({ songReady, currentTime }) {
     }
   }
   /**
-     * 播放歌詞
-     */
-   function playLyric () {
+   * 播放歌詞
+   */
+  function playLyric () {
     const currentLyricVal = currentLyric.value
     if (currentLyricVal) {
       currentLyricVal.seek(currentTime.value * 1000)
     }
   }
+  /** 暫停歌詞 */
+  function stopLyric () {
+    const currentLyricVal = currentLyric.value
+    if (currentLyricVal) {
+      currentLyricVal.stop()
+    }
+  }
   return {
     currentLyric,
     currentLineNum,
-    playLyric, // 防止 songReady.value = false，audio @canplay="ready"會偵測出發 songReady.value = true，再次執行playLyric()
+    playLyric, // 防止 songReady.value = false，audio @canplay="ready"會偵測觸發 songReady.value = true，再次執行playLyric()
+    stopLyric,
     lyricScrollRef,
     lyricListRef
   }
