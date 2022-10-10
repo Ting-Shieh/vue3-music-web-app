@@ -27,6 +27,11 @@ export default function useLyric ({ songReady, currentTime }) {
       return
     }
 
+    // 切換歌曲前先暫停播放歌詞(此時是上首歌)
+    stopLyric()
+    currentLyric.value = null
+    currentLineNum.value = 0
+
     // 獲取歌詞
     const lyric = await getLyric(newSong)
     // console.log(lyric)
