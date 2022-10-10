@@ -9,18 +9,19 @@
         <div ref="cdRef" class="cd">
           <img ref="cdImageRef" :class="cdCls" :src="currentSong.pic" width="40" height="40"></div>
       </div>
-      <div>
+      <!-- v1:無法左右滑動切割 -->
+      <!-- <div>
         <h2 class="name">{{currentSong.name}}</h2>
         <p class="desc">{{currentSong.singer}}</p>
-      </div>
-      <!-- <div class="slider-wrapper">
+      </div> -->
+      <div class="slider-wrapper">
         <div class="slider-group">
-          <div class="slider-page">
-            <h2 class="name">{{currentSong.name}}</h2>
-            <p class="desc">{{currentSong.singer}}</p>
+          <div class="slider-page" v-for="song in playList" :key="song.id">
+            <h2 class="name">{{song.name}}</h2>
+            <p class="desc">{{song.singer}}</p>
           </div>
         </div>
-      </div> -->
+      </div>
       <div class="control">
         <progress-circle :radius="32" :progress="progress">
           <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
@@ -43,6 +44,7 @@ const store = useStore()
 const fullScreen = computed(() => store.state.fullScreen)
 const currentSong = computed(() => store.getters.currentSong)
 const playing = computed(() => store.state.playing)
+const playList = computed(() => store.state.playList)
 // hook
 const { cdCls, cdRef, cdImageRef } = useCD()
 // computed
@@ -112,16 +114,46 @@ const showNormalPlayer = () => {
       font-size: 32px;
     }
   }
-  .name {
-    margin-bottom: 2px;
-    @include no-wrap();
-    font-size: $font-size-medium;
-    color: $color-text;
-  }
-  .desc {
-    @include no-wrap();
-    font-size: $font-size-small;
-    color: $color-text-d;
+  // .name {
+  //   margin-bottom: 2px;
+  //   @include no-wrap();
+  //   font-size: $font-size-medium;
+  //   color: $color-text;
+  // }
+  // .desc {
+  //   @include no-wrap();
+  //   font-size: $font-size-small;
+  //   color: $color-text-d;
+  // }
+  .slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    line-height: 20px;
+    overflow: hidden;
+    .slider-group {
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      .slider-page {
+        display: inline-block;
+        width: 100%;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        .name {
+          margin-bottom: 2px;
+          @include no-wrap();
+          font-size: $font-size-medium;
+          color: $color-text;
+        }
+        .desc {
+          @include no-wrap();
+          font-size: $font-size-small;
+          color: $color-text-d;
+        }
+      }
+    }
   }
   &.mini-enter-active, &.mini-leave-active {
     transition: all 0.6s cubic-bezier(0.45, 0, 0.55, 1);
