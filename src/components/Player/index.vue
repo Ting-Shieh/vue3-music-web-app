@@ -60,7 +60,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :progress="progress" @progress-changing="onProgressChanging" @progress-changed="onProgressChanged"></progress-bar>
+              <progress-bar ref="barRef" :progress="progress" @progress-changing="onProgressChanging" @progress-changed="onProgressChanged"></progress-bar>
             </div>
             <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
           </div>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
+import { computed, watch, ref, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
@@ -106,6 +106,7 @@ import { PLAY_MODE } from '@/assets/js/constant.js'
 import testSound from '@/assets/music/test-song-1.mp3'
 // data
 const audioRef = ref(null)
+const barRef = ref(null)
 const songReady = ref(false)
 const currentTime = ref(0) // 當前歌曲撥放時長
 let progressChanging = false
@@ -156,7 +157,14 @@ watch(playing, (newPlaying) => {
     stopLyric()
   }
 })
-
+watch(fullScreen, async (newFullScreen) => {
+  if (newFullScreen) {
+    // [注意] vue 數據更改到dom變化是隔nextTick => data change -> nextTick -> dom變化
+    // setOffset 內部為訪問dom
+    await nextTick()
+    barRef.value.setOffset(progress.value)
+  }
+})
 // methods
 const ready = () => {
   if (songReady.value) {

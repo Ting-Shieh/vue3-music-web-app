@@ -51,8 +51,9 @@ export default {
     progress (newProgress) {
       // 整個進度條寬度
       // 當fullScreen=false，normal-player dom 會display=none，該情快下調用this.$el api 計算clientWidth會出錯
-      const barWidth = this.$el.clientWidth - progressBtnWidth
-      this.offset = barWidth * newProgress
+      this.setOffset(newProgress)
+      // const barWidth = this.$el.clientWidth - progressBtnWidth
+      // this.offset = barWidth * newProgress
     }
   },
   methods: {
@@ -98,6 +99,10 @@ export default {
       console.log('progress:', progress)
       //
       this.$emit('progress-changed', progress)
+    },
+    setOffset (progress) {
+      const barWidth = this.$el.clientWidth - progressBtnWidth
+      this.offset = barWidth * progress
     }
   },
   created () {
