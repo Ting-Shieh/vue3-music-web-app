@@ -10,7 +10,7 @@ export default function useMiddleInteractive () {
 
   // 不須響應式
   const touch = {}
-  const currentView = 'cd' // 最終當前視圖(拖曳過程中不發生變化)
+  let currentView = 'cd' // 最終當前視圖(拖曳過程中不發生變化)
 
   function onMiddleTouchStart (e) {
     touch.startX = e.touches[0].pageX
@@ -27,6 +27,7 @@ export default function useMiddleInteractive () {
 
     // [思考]:偏移多少開始發生變化? => 計算偏移比例
     touch.percent = Math.abs(offsetWidth / window.innerWidth)
+    console.log('touch.percent', touch.percent)
     if (currentView === 'cd') {
       if (touch.percent > 0.2) {
         currentShow.value = 'lyric'
@@ -47,11 +48,33 @@ export default function useMiddleInteractive () {
       transitionDuration: '0ms'
     }
     middleRStyle.value = {
-      transition: `translate3d(${offsetWidth}px, 0, 0)`,
+      transform: `translate3d(${offsetWidth}px, 0, 0)`,
       transitionDuration: '0ms'
     }
   }
+  /** 鬆開手指，修改樣式 */
   function onMiddleTouchEnd () {
+    let opacity
+    let offsetWidth
+    const duration = 300
+    if (currentShow.value === 'cd') {
+      currentView = 'cd'
+      offsetWidth = 0
+      opacity = 1
+    } else {
+      currentView = 'lyric'
+      offsetWidth = -window.innerWidth
+      opacity = 0
+    }
+
+    middleLStyle.value = {
+      opacity,
+      transitionDuration: `${duration}ms`
+    }
+    middleRStyle.value = {
+      transform: `translate3d(${offsetWidth}px, 0, 0)`,
+      transitionDuration: `${duration}ms`
+    }
   }
   return {
     currentShow,

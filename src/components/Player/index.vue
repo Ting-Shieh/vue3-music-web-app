@@ -51,8 +51,8 @@
         </div>
         <div class="bottom">
           <!-- 左右移動層標示(中間視圖層手指交互) -->
-          <div class="dor-wrapper this">
-            <span class="dot this" :class="{'active': currentShow === 'cd'}"></span>
+          <div class="dot-wrapper">
+            <span class="dot" :class="{'active': currentShow === 'cd'}"></span>
             <span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
           </div>
           <!-- progress -->
