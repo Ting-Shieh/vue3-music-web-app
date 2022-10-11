@@ -1,4 +1,4 @@
-/** CD 飛躍動畫 (小到大叫進入|大到小叫離開)
+/** CD 飛躍動畫 (小CD到大CD叫進入|大CD到小CD叫離開)
  * ↗ : enter
  * ↙ : leave
  * */
@@ -9,6 +9,7 @@ export default function useAnimation () {
   const cdWrapperRef = ref(null)
 
   // hook
+  /** 法1:使用函式庫 */
   function enter (el, done) {
     const { x, y, scale } = getPostAndScale()
     const animation = {
@@ -40,9 +41,26 @@ export default function useAnimation () {
     animations.unregisterAnimation('move')
     cdWrapperRef.value.animation = ''
   }
-  function leave () {
+  /** 法2:使用原生方法 */
+  function leave (el, done) {
+    const { x, y, scale } = getPostAndScale()
+    const cdWrapperEl = cdWrapperRef.value
+
+    cdWrapperEl.style.transition = 'all .6s cubic-bezier(0.45, 0, 0.55, 1)'
+    cdWrapperEl.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`
+    // 動畫結束事件
+    cdWrapperEl.addEventListener('transitionend', next)
+
+    function next () {
+      // 動畫為主動綁定，所以結束後要親自解綁定。
+      cdWrapperEl.removeEventListener('transitionend', next)
+      done()
+    }
   }
   function afterLeave () {
+    const cdWrapperEl = cdWrapperRef.value
+    cdWrapperEl.style.transition = ''
+    cdWrapperEl.style.transform = ''
   }
   function getPostAndScale () {
     const targetWidth = 40 // 小CD 40px
@@ -61,7 +79,6 @@ export default function useAnimation () {
     enter,
     afterEnter,
     leave,
-    afterLeave,
-    getPostAndScale
+    afterLeave
   }
 }

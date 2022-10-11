@@ -1,6 +1,12 @@
 <template>
   <div class='player' v-show="playList.length">
-    <transition name="normal" @enter="enter" @after-enter="afterEnter">
+    <transition
+      name="normal"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
       <!-- normal-player dom -->
       <div class="normal-player" v-show="fullScreen">
         <template v-if="currentSong">
@@ -129,7 +135,7 @@ const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdRef, cdImageRef } = useCD() // cdRef, cdImageRef 定義在鉤子裡面
 const { currentLyric, currentLineNum, playLyric, stopLyric, lyricScrollRef, lyricListRef, pureMusicLyric, playingLyric } = useLyric({ songReady, currentTime })
 const { currentShow, middleLStyle, middleRStyle, onMiddleTouchStart, onMiddleTouchMove, onMiddleTouchEnd } = useMiddleInteractive()
-const { cdWrapperRef, enter, afterEnter } = useAnimation()
+const { cdWrapperRef, enter, afterEnter, leave, afterLeave } = useAnimation()
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')
