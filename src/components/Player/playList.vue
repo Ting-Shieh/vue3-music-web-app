@@ -1,13 +1,21 @@
 <template>
   <teleport to="body">
     <transition name="list-fade">
-      <div class="playlist" v-show="visible && playList.length">
+      <div
+        class="playlist"
+        v-show="visible && playList.length"
+        @click="hide"
+      >
         <div class="list-wrapper">
           <!-- 頂部 -->
           <div class="list-header">
             <h1 class="title">
               <!-- 播放模式按鈕 -->
-              <i class="icon" :class="modeIcon"></i>
+              <i
+               class="icon"
+               :class="modeIcon"
+               @click.stop="changeMode"
+              ></i>
               <span class="text">{{modeText}}</span>
               <span class="clear"></span>
             </h1>
@@ -15,6 +23,7 @@
           <!-- 中間 -->
           <base-scroll
             class="list-content"
+            ref="scrollRef"
           >
             <ul>
               <li
@@ -24,14 +33,18 @@
               >
                 <i class="current" :class="getCurrentIcon(song)"></i>
                 <span class="text">{{song.name}}</span>
-                <span class="favorite">
+                <!-- 收藏 -->
+                <span
+                  class="favorite"
+                  @click.stop="toggleFavorite(song)"
+                >
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
               </li>
             </ul>
           </base-scroll>
           <!-- 底部 -->
-          <div class="list-footer">
+          <div class="list-footer" @click.stop="hide">
             <span>關閉</span>
           </div>
         </div>
@@ -41,6 +54,45 @@
 </template>
 <script setup>
 import BaseScroll from '@/components/Base/Scroll'
+import useMode from './useMode.js'
+import useFavorite from './useFavorite.js'
+import { computed, ref, defineExpose, nextTick } from 'vue'
+import { useStore } from 'vuex'
+// data
+const visible = ref(false)
+const scrollRef = ref(null)
+// vuex
+const store = useStore()
+const sequenceList = computed(() => store.state.sequenceList)
+const playList = computed(() => store.state.playList)
+const currentSong = computed(() => store.getters.currentSong)
+
+// hook
+const { modeIcon, modeText, changeMode } = useMode()
+const { getFavoriteIcon, toggleFavorite } = useFavorite()
+
+// computed
+// const modeIcon = computed(() => )
+
+// methods
+const hide = () => {
+  visible.value = false
+}
+const getCurrentIcon = (song) => {
+  if (song.id === currentSong.value.id) {
+    return 'icon-play'
+  }
+}
+const refreshScroll = () => {
+  scrollRef.value.scroll.refresh()
+}
+/** 主要給外部用 */
+const show = async() => {
+  visible.value = true
+  await nextTick()
+  refreshScroll()
+}
+defineExpose({ show })
 </script>
 <style lang="scss" scoped>
 .playlist {

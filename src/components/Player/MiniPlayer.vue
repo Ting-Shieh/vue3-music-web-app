@@ -1,9 +1,9 @@
 <template>
   <transition name="mini">
     <div
-    class="mini-player"
-    v-show="!fullScreen"
-    @click="showNormalPlayer"
+      class="mini-player"
+      v-show="!fullScreen"
+      @click="showNormalPlayer"
     >
       <div class="cd-wrapper">
         <div ref="cdRef" class="cd">
@@ -22,24 +22,29 @@
           </div>
         </div>
       </div>
-      <div class="control">
-        <progress-circle :radius="32" :progress="progress">
-          <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
-        </progress-circle>
+      <div class="controls">
+        <div class="control">
+          <progress-circle :radius="32" :progress="progress">
+            <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
+          </progress-circle>
+        </div>
+        <div class="control" @click.stop="showPlayList">
+          <i class="icon-playlist"></i>
+        </div>
       </div>
-      <!--
-      <div class="control">
-        <i class="icon-playlist"></i>
-      </div> -->
+      <play-list-comp ref="playListRef" />
     </div>
   </transition>
 </template>
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, ref } from 'vue'
 import { useStore } from 'vuex'
 import useCD from './useCD.js'
 import useMiniSlider from './useMiniSlider.js'
 import ProgressCircle from './ProgressCircle.vue'
+import PlayListComp from './PlayList.vue'
+// data
+const playListRef = ref(null)
 //  vuex
 const store = useStore()
 const fullScreen = computed(() => store.state.fullScreen)
@@ -61,8 +66,13 @@ defineProps({
     type: Function
   }
 })
+
+// methods
 const showNormalPlayer = () => {
   store.commit('setFullScreen', true)
+}
+const showPlayList = () => {
+  playListRef.value.show()
 }
 
 </script>
@@ -96,12 +106,15 @@ const showNormalPlayer = () => {
       }
     }
   }
+  .controls{
+    right: 0;
+    position: absolute;
+    display: flex;
+  }
   .control {
     flex: 0 0 30px;
     width: 30px;
     padding: 0 10px;
-    right: 0;
-    position: absolute;
     .icon-playlist {
       position: relative;
       top: -2px;
