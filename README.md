@@ -23,3 +23,4 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 See [BetterScroll Package](https://better-scroll.github.io/docs/zh-CN/guide/)
+See [create-keyframe-animation Package](https://github.com/HenrikJoreteg/create-keyframe-animation)

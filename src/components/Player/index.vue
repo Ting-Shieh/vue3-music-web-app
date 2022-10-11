@@ -1,6 +1,6 @@
 <template>
   <div class='player' v-show="playList.length">
-    <transition name="normal">
+    <transition name="normal" @enter="enter" @after-enter="afterEnter">
       <!-- normal-player dom -->
       <div class="normal-player" v-show="fullScreen">
         <template v-if="currentSong">
@@ -23,7 +23,7 @@
           >
             <!-- 中間視圖層手指交互-唱片 -->
             <div class="middle-l" :style="middleLStyle">
-              <div class="cd-wrapper">
+              <div ref="cdWrapperRef" class="cd-wrapper">
                 <div ref="cdRef" class="cd">
                   <img ref="cdImageRef" :src="currentSong.pic" class="image" :class="cdCls">
                 </div>
@@ -101,6 +101,7 @@ import useFavorite from './useFavorite.js'
 import useCD from './useCD.js'
 import useLyric from './useLyric.js'
 import useMiddleInteractive from './useMiddleInteractive.js'
+import useAnimation from './useAnimation.js'
 import ProgressBar from './ProgressBar.vue'
 import MiniPlayer from './MiniPlayer.vue'
 import BaseScroll from '@/components/Base/Scroll'
@@ -128,6 +129,7 @@ const { getFavoriteIcon, toggleFavorite } = useFavorite()
 const { cdCls, cdRef, cdImageRef } = useCD() // cdRef, cdImageRef 定義在鉤子裡面
 const { currentLyric, currentLineNum, playLyric, stopLyric, lyricScrollRef, lyricListRef, pureMusicLyric, playingLyric } = useLyric({ songReady, currentTime })
 const { currentShow, middleLStyle, middleRStyle, onMiddleTouchStart, onMiddleTouchMove, onMiddleTouchEnd } = useMiddleInteractive()
+const { cdWrapperRef, enter, afterEnter } = useAnimation()
 // computed
 const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play')
 const disableCls = computed(() => songReady.value ? '' : 'disable')
