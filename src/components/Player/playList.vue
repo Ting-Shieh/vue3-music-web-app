@@ -46,7 +46,7 @@
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
                 <!-- 刪除 -->
-                <span class="delete" @click.stop="removeSong(song)">
+                <span class="delete" :class="{'disable': removing}" @click.stop="removeSong(song)">
                   <i class="icon-delete"></i>
                 </span>
               </li>
@@ -67,8 +67,12 @@ import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import { computed, ref, defineExpose, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
+// const
+const listFadeAnimationDuration = 0.3
+const listFadeAnimationDurationStr = `${listFadeAnimationDuration}s`
 // data
 const visible = ref(false)
+const removing = ref(false) // 控制刪除
 const scrollRef = ref(null)
 const listRef = ref(null)
 
@@ -86,8 +90,9 @@ const { getFavoriteIcon, toggleFavorite } = useFavorite()
 // const modeIcon = computed(() => )
 
 // watch
-watch(currentSong, async () => {
-  if (!visible.value) {
+watch(currentSong, async (newSong) => {
+  // 刪除歌曲點太快可能造成 !newSong.id
+  if (!visible.value || !newSong.id) {
     return
   }
   await nextTick()
@@ -118,6 +123,9 @@ const scrollToCurrent = () => {
   const index = sequenceList.value.findIndex(song => {
     return song.id === currentSong.value.id
   })
+  if (index === -1) {
+    return
+  }
   // li element
   // const target = listRef.value.children[index]
   // 換成transition-group，listRef 指向的就是組件實例，對應的 DOM 就是 $el
@@ -137,7 +145,15 @@ const selectItem = (song) => {
 
 /** 刪除歌曲 */
 const removeSong = (song) => {
+  if (removing.value) {
+    return
+  }
+  removing.value = true
   store.dispatch('removeSong', song)
+  // 動畫 300ms
+  setTimeout(() => {
+    removing.value = false
+  }, listFadeAnimationDuration * 1000)
 }
 
 /** 主要給外部用 */
@@ -153,9 +169,9 @@ defineExpose({ show })
   z-index: 200;
   background-color: $color-background-d;
   &.list-fade-enter-active, &.list-fade-leave-active {
-    transition: opacity .3s;
+    transition: opacity v-bind(listFadeAnimationDurationStr); // opacity .3s;
     .list-wrapper {
-      transition: all .3s;
+      transition:  all v-bind(listFadeAnimationDurationStr) // all .3s;
     }
   }
   &.list-fade-enter-from, &.list-fade-leave-to {

@@ -64,6 +64,9 @@ export function removeSong ({ commit, state }, song) {
   // 找索引
   const sequenceIndex = findArrayIndex(sequenceList, song)
   const playIndex = findArrayIndex(playList, song)
+  if (playIndex < 0 || sequenceIndex < 0) {
+    return
+  }
 
   // 刪除
   sequenceList.splice(sequenceIndex, 1)
