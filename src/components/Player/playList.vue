@@ -25,7 +25,11 @@
             class="list-content"
             ref="scrollRef"
           >
-            <ul ref="listRef">
+            <transition-group
+              ref="listRef"
+              name="list"
+              tag="ul"
+            >
               <li
                 class="item"
                 v-for="song in sequenceList"
@@ -41,8 +45,12 @@
                 >
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
+                <!-- 刪除 -->
+                <span class="delete" @click.stop="removeSong(song)">
+                  <i class="icon-delete"></i>
+                </span>
               </li>
-            </ul>
+            </transition-group>
           </base-scroll>
           <!-- 底部 -->
           <div class="list-footer" @click.stop="hide">
@@ -111,10 +119,13 @@ const scrollToCurrent = () => {
     return song.id === currentSong.value.id
   })
   // li element
-  const target = listRef.value.children[index]
+  // const target = listRef.value.children[index]
+  // 換成transition-group，listRef 指向的就是組件實例，對應的 DOM 就是 $el
+  const target = listRef.value.$el.children[index]
   scrollRef.value.scroll.scrollToElement(target, 300)
 }
 
+/** 選擇歌曲 */
 const selectItem = (song) => {
   const index = playList.value.findIndex(item => {
     return item.id === song.id
@@ -123,6 +134,12 @@ const selectItem = (song) => {
   store.commit('setCurrentIndex', index)
   store.commit('setPlayingState', true) // 可能那時候是暫停播放狀態
 }
+
+/** 刪除歌曲 */
+const removeSong = (song) => {
+  store.dispatch('removeSong', song)
+}
+
 /** 主要給外部用 */
 defineExpose({ show })
 </script>

@@ -51,3 +51,36 @@ export function changeMode ({ commit, state, getters }, mode) {
   // 改變播放模式
   commit('setPlayMode', mode)
 }
+
+/**
+ * 移除歌曲
+ * @param {*} param0
+ * @param {*} song
+ */
+export function removeSong ({ commit, state }, song) {
+  // 獲得副本 => vuex 修改state 一釘得用提交mutations方式
+  const sequenceList = state.sequenceList.slice()
+  const playList = state.playList.slice()
+  // 找索引
+  const sequenceIndex = findArrayIndex(sequenceList, song)
+  const playIndex = findArrayIndex(playList, song)
+
+  // 刪除
+  sequenceList.splice(sequenceIndex, 1)
+  playList.splice(playIndex, 1)
+
+  let currentIndex = state.currentIndex
+  if (playIndex < currentIndex || currentIndex === playList.length) {
+    // 整個列表長度已經變了
+    currentIndex--
+  }
+
+  // 提交副本
+  commit('setSequenceList', sequenceList)
+  commit('setPlayList', playList)
+  commit('setCurrentIndex', currentIndex)
+}
+
+function findArrayIndex (list, song) {
+  return list.findIndex(item => item.id === song.id)
+}
