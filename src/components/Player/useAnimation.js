@@ -1,16 +1,25 @@
 /** CD 飛躍動畫 (小CD到大CD叫進入|大CD到小CD叫離開)
  * ↗ : enter
  * ↙ : leave
+ * [注意]: 動畫未完成即觸發另一個動畫
+ * 情境: 用戶太快點擊所產生的Bug
  * */
 import { ref } from 'vue'
 import animations from 'create-keyframe-animation'
 
 export default function useAnimation () {
   const cdWrapperRef = ref(null)
+  let entering = false
+  let leaving = false
 
   // hook
-  /** 法1:使用函式庫 */
+  /** 法1:使用函式庫，完成"進入"過渡動畫 */
   function enter (el, done) {
+    // 離開過渡動畫尚未結束時
+    if (leaving) {
+      afterLeave()
+    }
+    entering = true
     const { x, y, scale } = getPostAndScale()
     const animation = {
       // 小cd
@@ -37,12 +46,18 @@ export default function useAnimation () {
     animations.runAnimation(cdWrapperRef.value, 'move', done)
   }
   function afterEnter () {
+    entering = false
     // 清理 animation
     animations.unregisterAnimation('move')
     cdWrapperRef.value.animation = ''
   }
-  /** 法2:使用原生方法 */
+  /** 法2:使用原生方法，完成"離開"過渡動畫 */
   function leave (el, done) {
+    // 進入過渡動畫尚未結束時
+    if (entering) {
+      afterEnter()
+    }
+    leaving = true
     const { x, y, scale } = getPostAndScale()
     const cdWrapperEl = cdWrapperRef.value
 
@@ -58,6 +73,7 @@ export default function useAnimation () {
     }
   }
   function afterLeave () {
+    leaving = false
     const cdWrapperEl = cdWrapperRef.value
     cdWrapperEl.style.transition = ''
     cdWrapperEl.style.transform = ''
