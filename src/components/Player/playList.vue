@@ -6,7 +6,7 @@
         v-show="visible && playList.length"
         @click="hide"
       >
-        <div class="list-wrapper">
+        <div class="list-wrapper" @click.stop>
           <!-- 頂部 -->
           <div class="list-header">
             <h1 class="title">
@@ -14,7 +14,7 @@
               <i
                class="icon"
                :class="modeIcon"
-               @click.stop="changeMode"
+               @click="changeMode"
               ></i>
               <span class="text">{{modeText}}</span>
               <span class="clear"></span>
@@ -25,11 +25,12 @@
             class="list-content"
             ref="scrollRef"
           >
-            <ul>
+            <ul ref="listRef">
               <li
                 class="item"
                 v-for="song in sequenceList"
                 :key="song.id"
+                @click="selectItem(song)"
               >
                 <i class="current" :class="getCurrentIcon(song)"></i>
                 <span class="text">{{song.name}}</span>
@@ -56,11 +57,13 @@
 import BaseScroll from '@/components/Base/Scroll'
 import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
-import { computed, ref, defineExpose, nextTick } from 'vue'
+import { computed, ref, defineExpose, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
 // data
 const visible = ref(false)
 const scrollRef = ref(null)
+const listRef = ref(null)
+
 // vuex
 const store = useStore()
 const sequenceList = computed(() => store.state.sequenceList)
@@ -74,6 +77,14 @@ const { getFavoriteIcon, toggleFavorite } = useFavorite()
 // computed
 // const modeIcon = computed(() => )
 
+// watch
+watch(currentSong, async () => {
+  if (!visible.value) {
+    return
+  }
+  await nextTick()
+  scrollToCurrent()
+})
 // methods
 const hide = () => {
   visible.value = false
@@ -86,12 +97,33 @@ const getCurrentIcon = (song) => {
 const refreshScroll = () => {
   scrollRef.value.scroll.refresh()
 }
-/** 主要給外部用 */
+
 const show = async() => {
   visible.value = true
   await nextTick()
   refreshScroll()
+  scrollToCurrent()
 }
+
+/** 滾動到指定的歌曲element */
+const scrollToCurrent = () => {
+  const index = sequenceList.value.findIndex(song => {
+    return song.id === currentSong.value.id
+  })
+  // li element
+  const target = listRef.value.children[index]
+  scrollRef.value.scroll.scrollToElement(target, 300)
+}
+
+const selectItem = (song) => {
+  const index = playList.value.findIndex(item => {
+    return item.id === song.id
+  })
+
+  store.commit('setCurrentIndex', index)
+  store.commit('setPlayingState', true) // 可能那時候是暫停播放狀態
+}
+/** 主要給外部用 */
 defineExpose({ show })
 </script>
 <style lang="scss" scoped>
