@@ -14,7 +14,7 @@
         <h2 class="name">{{currentSong.name}}</h2>
         <p class="desc">{{currentSong.singer}}</p>
       </div> -->
-      <div class="slider-wrapper">
+      <div class="slider-wrapper" ref="sliderWrapperRef">
         <div class="slider-group">
           <div class="slider-page" v-for="song in playList" :key="song.id">
             <h2 class="name">{{song.name}}</h2>
@@ -38,6 +38,7 @@
 import { computed, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import useCD from './useCD.js'
+import useMiniSlider from './useMiniSlider.js'
 import ProgressCircle from './ProgressCircle.vue'
 //  vuex
 const store = useStore()
@@ -47,6 +48,7 @@ const playing = computed(() => store.state.playing)
 const playList = computed(() => store.state.playList)
 // hook
 const { cdCls, cdRef, cdImageRef } = useCD()
+const { sliderWrapperRef } = useMiniSlider()
 // computed
 const miniPlayIcon = computed(() => playing.value ? 'icon-pause-mini' : 'icon-play-mini')
 // props
