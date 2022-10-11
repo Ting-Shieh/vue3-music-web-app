@@ -22,15 +22,13 @@
           </div>
         </div>
       </div>
-      <div class="controls">
-        <div class="control">
-          <progress-circle :radius="32" :progress="progress">
-            <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
-          </progress-circle>
-        </div>
-        <div class="control" @click.stop="showPlayList">
-          <i class="icon-playlist"></i>
-        </div>
+      <div class="control">
+        <progress-circle :radius="32" :progress="progress">
+          <i class="icon-mini" :class="miniPlayIcon" @click.stop="togglePlay"></i>
+        </progress-circle>
+      </div>
+      <div class="control" @click.stop="showPlayList">
+        <i class="icon-playlist"></i>
       </div>
       <play-list-comp ref="playListRef" />
     </div>
@@ -148,6 +146,7 @@ const showPlayList = () => {
     line-height: 20px;
     overflow: hidden;
     .slider-group {
+      display: inline-block;
       position: relative;
       overflow: hidden;
       white-space: nowrap;

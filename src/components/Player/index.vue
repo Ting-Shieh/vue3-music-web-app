@@ -155,6 +155,8 @@ watch(currentSong, (newSong) => {
   audioEl.src = testSound
   audioEl.muted = false
   audioEl.play()
+  // 歌曲切換即觸發
+  store.commit('setPlayingState', true)
 })
 watch(playing, (newPlaying) => {
   if (!songReady.value) {
@@ -216,10 +218,6 @@ const prev = () => {
       index = list.length - 1
     }
     store.commit('setCurrentIndex', index)
-    if (!playing.value) {
-      // 當前為暫停，則修改為撥放
-      store.commit('setPlayingState', true)
-    }
   }
 }
 const next = () => {
@@ -238,10 +236,6 @@ const next = () => {
       index = 0
     }
     store.commit('setCurrentIndex', index)
-    if (!playing.value) {
-      // 當前為暫停，則修改為撥放
-      store.commit('setPlayingState', true)
-    }
   }
 }
 const updateTime = (e) => {

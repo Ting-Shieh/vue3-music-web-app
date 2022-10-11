@@ -37,8 +37,7 @@ export default function useMiniSlider () {
           })
           sliderVal.on('slidePageChanged', ({ pageX }) => {
             store.commit('setCurrentIndex', pageX)
-            // 若為暫停狀態切歌曲
-            store.commit('setPlayingState', true)
+            // 刪除歌曲時，不想觸發 setPlayingState
           })
         } else {
           sliderVal.refresh()
@@ -53,6 +52,12 @@ export default function useMiniSlider () {
       // MiniPlayer 未顯示，則執行goToPage() 無意義
       if (sliderVal && sliderShow.value) {
         sliderVal.goToPage(newIndex, 0, 0)
+      }
+    })
+    watch(playList, async () => {
+      if (sliderVal && sliderShow.value) {
+        await nextTick()
+        sliderVal.refresh()
       }
     })
   })
