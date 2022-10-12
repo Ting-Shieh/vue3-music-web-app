@@ -82,6 +82,10 @@ export function removeSong ({ commit, state }, song) {
   commit('setSequenceList', sequenceList)
   commit('setPlayList', playList)
   commit('setCurrentIndex', currentIndex)
+  // 一條條點刪除，直到清空狀態
+  if (!playList.length) {
+    commit('setPlayingState', false)
+  }
 }
 
 /**
@@ -93,6 +97,8 @@ export function clearSongList ({ commit }) {
   commit('setSequenceList', [])
   commit('setPlayList', [])
   commit('setCurrentIndex', 0)
+  // 因為 commit('setCurrentIndex', 0)，會影響正在撥放的歌曲currentSong
+  commit('setPlayingState', false)
 }
 
 function findArrayIndex (list, song) {

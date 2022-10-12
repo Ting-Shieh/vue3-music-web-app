@@ -54,8 +54,9 @@ export default function useMiniSlider () {
         sliderVal.goToPage(newIndex, 0, 0)
       }
     })
-    watch(playList, async () => {
-      if (sliderVal && sliderShow.value) {
+    watch(playList, async (newList) => {
+      // newList.length > 0 => refresh() 才不會出錯。否則清空播放列表會出現CloneNode錯誤。
+      if (sliderVal && sliderShow.value && newList.length) {
         await nextTick()
         sliderVal.refresh()
       }

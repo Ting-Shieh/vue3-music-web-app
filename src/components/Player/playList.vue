@@ -160,6 +160,9 @@ const removeSong = (song) => {
   }
   removing.value = true
   store.dispatch('removeSong', song)
+  if (!playList.value.length) {
+    hide()
+  }
   // 動畫 300ms
   setTimeout(() => {
     removing.value = false
@@ -173,6 +176,7 @@ const showConfirm = () => {
 /** 執行清空播放列表 */
 const confirmClear = () => {
   store.dispatch('clearSongList')
+  hide()
 }
 /** 主要給外部用 vue3 一定要爆露才能用ref拿到 */
 defineExpose({ show })
