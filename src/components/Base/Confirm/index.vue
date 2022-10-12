@@ -1,13 +1,13 @@
 <template>
   <teleport to="body">
     <transition name="confirm-fade">
-      <div class="confirm">
+      <div class="confirm" v-show="visible">
         <div class="confirm-wrapper">
           <div class="confirm-content">
-            <p class="text"></p>
+            <p class="text">{{text}}</p>
             <div class="operate">
-              <div class="operate-btn left">{{confirmBtnText}}</div>
-              <div class="operate-btn">{{cancelBtnText}}</div>
+              <div class="operate-btn left" @click="confirm">{{confirmBtnText}}</div>
+              <div class="operate-btn" @click="cancel">{{cancelBtnText}}</div>
             </div>
           </div>
         </div>
@@ -17,7 +17,43 @@
 </template>
 <script>
   export default {
-    name: 'Confirm'
+    name: 'Confirm',
+    props: {
+      text: {
+        type: String,
+        default: ''
+      },
+      confirmBtnText: {
+        type: String,
+        default: '確定'
+      },
+      cancelBtnText: {
+        type: String,
+        default: '取消'
+      }
+    },
+    emits: ['confirm', 'cancel'],
+    data () {
+      return {
+        visible: false
+      }
+    },
+    methods: {
+      cancel () {
+        this.hide()
+        this.$emit('cancel')
+      },
+      confirm () {
+        this.hide()
+        this.$emit('confirm')
+      },
+      hide () {
+        this.visible = false
+      },
+      show () {
+        this.visible = true
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>

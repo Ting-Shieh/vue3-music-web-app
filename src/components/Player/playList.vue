@@ -17,7 +17,10 @@
                @click="changeMode"
               ></i>
               <span class="text">{{modeText}}</span>
-              <span class="clear"></span>
+              <!-- 清空彈窗 -->
+              <span class="clear" @click="showConfirm">
+                <i class="icon-clear"></i>
+              </span>
             </h1>
           </div>
           <!-- 中間 -->
@@ -56,6 +59,8 @@
           <div class="list-footer" @click.stop="hide">
             <span>關閉</span>
           </div>
+          <!-- Confirm -->
+          <Confirm ref="confirmRef" :text="confirmText" confirmBtnText="清空" @confirm="confirmClear"/>
         </div>
       </div>
     </transition>
@@ -63,6 +68,7 @@
 </template>
 <script setup>
 import BaseScroll from '@/components/Base/Scroll'
+import Confirm from '@/components/Base/Confirm'
 import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import { computed, ref, defineExpose, nextTick, watch } from 'vue'
@@ -70,11 +76,13 @@ import { useStore } from 'vuex'
 // const
 const listFadeAnimationDuration = 0.3
 const listFadeAnimationDurationStr = `${listFadeAnimationDuration}s`
+const confirmText = '是否清空撥放列表?'
 // data
 const visible = ref(false)
 const removing = ref(false) // 控制刪除
 const scrollRef = ref(null)
 const listRef = ref(null)
+const confirmRef = ref(null)
 
 // vuex
 const store = useStore()
@@ -107,6 +115,8 @@ const getCurrentIcon = (song) => {
     return 'icon-play'
   }
 }
+
+/** 點擊刪除後，scroll組件重新計算渲染 */
 const refreshScroll = () => {
   scrollRef.value.scroll.refresh()
 }
@@ -156,7 +166,15 @@ const removeSong = (song) => {
   }, listFadeAnimationDuration * 1000)
 }
 
-/** 主要給外部用 */
+/** 顯示Confirm彈窗 */
+const showConfirm = () => {
+  confirmRef.value.show()
+}
+/** 執行清空播放列表 */
+const confirmClear = () => {
+  store.dispatch('clearSongList')
+}
+/** 主要給外部用 vue3 一定要爆露才能用ref拿到 */
 defineExpose({ show })
 </script>
 <style lang="scss" scoped>

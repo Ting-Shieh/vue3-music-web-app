@@ -84,6 +84,17 @@ export function removeSong ({ commit, state }, song) {
   commit('setCurrentIndex', currentIndex)
 }
 
+/**
+ * 清空播放列表
+ * @param {*} param0
+ */
+export function clearSongList ({ commit }) {
+  // 提交副本
+  commit('setSequenceList', [])
+  commit('setPlayList', [])
+  commit('setCurrentIndex', 0)
+}
+
 function findArrayIndex (list, song) {
   return list.findIndex(item => item.id === song.id)
 }
