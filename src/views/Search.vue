@@ -3,14 +3,38 @@
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
+    <div class="search-content">
+      <div class="hot-keys">
+        <h1 class="title">熱門搜索</h1>
+        <ul>
+          <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
+            <span>{{item.key}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import SearchInput from '@/components/SearchInput'
+import { getHotKeys } from '@/service/search.js'
 import { ref } from 'vue'
-
+// fake data
+const fakeData = [{ key: '123' }, { key: '125' }, { key: '789' }, { key: '658' }, { key: '55' }]
+// data
 const query = ref('')
+const hotKeys = ref([])
+
+//
+getHotKeys().then((res) => {
+  console.log('getHotKeys:', res)
+  hotKeys.value = res && res.hotKeys ? res.hotKeys : fakeData
+})
+// methods
+const addQuery = (key) => {
+  query.value = key
+}
 </script>
 <style lang="scss" scoped>
 .search{
@@ -23,6 +47,27 @@ const query = ref('')
   flex-direction: column;
   .search-input-wrapper{
     margin: 20px;
+  }
+  .search-content {
+    flex: 1;
+    overflow: hidden;
+    .hot-keys {
+      margin: 0 20px 20px 20px;
+      .title {
+        margin-bottom: 20px;
+        font-size: $font-size-medium;
+        color: $color-text-l;
+      }
+      .item {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 20px 10px 0;
+        border-radius: 6px;
+        background: $color-highlight-background;
+        font-size: $font-size-medium;
+        color: $color-text-d;
+      }
+    }
   }
 }
 </style>

@@ -4,6 +4,7 @@
     <input
       class="input-inner"
       v-model="query"
+      :placeholder="placeholder"
     />
     <i v-show="query" class="icon-dismiss" @click="clear"></i>
   </div>
@@ -14,11 +15,11 @@ export default {
   name: 'SearchInput',
   props: {
     // vue2 value: String
-    modelValue: String
-    // placeholder: {
-    //   type: String,
-    //   default: '搜尋歌曲、歌手'
-    // }
+    modelValue: String,
+    placeholder: {
+      type: String,
+      default: '搜尋歌曲、歌手'
+    }
   },
   data () {
     return {
