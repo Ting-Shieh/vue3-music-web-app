@@ -6,6 +6,7 @@
           class="item"
           v-for="item in topList"
           :key="item.id"
+          @click="selectItem(item)"
         >
           <div class="icon">
             <img
@@ -27,11 +28,18 @@
         </li>
       </ul>
     </wrap-scroll>
+    <router-view v-slot="{ Component }">
+      <!-- appear 一進入就有動畫 -->
+      <transition appear name="slide">
+        <component :is="Component" :data="selectedTop"/>
+      </transition>
+    </router-view>
   </div>
 </template>
 <script>
 import WrapScroll from '@/components/WrapScroll'
 import { getTopList } from '@/service/top-list'
+import { TOP_KEY } from '@/assets/js/constant.js'
 export default {
   name: 'TopList',
   components: {
@@ -40,10 +48,22 @@ export default {
   data () {
     return {
       topList: [],
-      loading: true
+      loading: true,
+      selectedTop: null
     }
   },
-  methods: {},
+  methods: {
+    selectItem (top) {
+      this.selectedTop = top
+      this.cacheTop(top)
+      this.$router.push({
+        path: `/top-list/${top.id}`
+      })
+    },
+    cacheTop (top) {
+      sessionStorage.setItem(TOP_KEY, JSON.stringify(top))
+    }
+  },
   async created () {
     const result = await getTopList()
     this.topList = result.topList

@@ -35,7 +35,13 @@ const routes = [
   {
     path: '/top-list',
     name: 'TopList',
-    component: () => import('../views/TopList.vue')
+    component: () => import('../views/TopList.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('../views/TopDetail.vue')
+      }
+    ]
   }
 ]
 
