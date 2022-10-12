@@ -26,7 +26,7 @@
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs" @select="selectItem"></song-list>
+        <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
       </div>
     </wrap-scroll>
     <!-- 版本1: 非使用高階組件 -->
@@ -70,7 +70,8 @@ export default {
     noResultText: {
       type: String,
       default: '抱歉，沒有找到可撥放歌曲。'
-    }
+    },
+    rank: Boolean
   },
   data () {
     return {
