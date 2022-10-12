@@ -1,4 +1,5 @@
 export const SINGER_KEY = '__singer__'
+export const ALBUM_KEY = '__album__'
 export const FAVORITE_KEY = '__favorite__'
 export const PLAY_MODE = {
   sequence: 0, // 順序

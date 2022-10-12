@@ -3,11 +3,18 @@
     <music-list :songs="songs" :title="title" :pic="pic" :loading="loading" />
   </div>
 </template>
-<script >
-  import { getSingerDetail } from '@/service/singer.js'
-  import { processSongs } from '@/service/song.js'
-  import MusicList from '@/components/MusicList'
-  import { SINGER_KEY } from '@/assets/js/constant.js'
+<script>
+import createDetailComponent from '@/assets/js/create-detail-component.js'
+import { getSingerDetail } from '@/service/singer.js'
+import { SINGER_KEY } from '@/assets/js/constant.js'
+export default createDetailComponent('SingerDetail', SINGER_KEY, getSingerDetail)
+</script>
+<!-- v1: 以下功能轉換為create-detail-component.js，作為v2版本。 -->
+<!-- <script >
+import { getSingerDetail } from '@/service/singer.js'
+import { processSongs } from '@/service/song.js'
+import MusicList from '@/components/MusicList'
+import { SINGER_KEY } from '@/assets/js/constant.js'
 export default {
   name: 'SingerDetail',
   components: { MusicList },
@@ -62,7 +69,7 @@ export default {
     this.loading = false
   }
 }
-</script>
+</script> -->
 <style lang="scss" scoped>
 .singer-detail {
     position: fixed;

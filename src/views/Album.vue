@@ -9,9 +9,10 @@
   </div>
 </template>
 <script>
-export default {
-  name: 'Album'
-}
+import createDetailComponent from '@/assets/js/create-detail-component.js'
+import { getAlbum } from '@/service/recommend.js'
+import { ALBUM_KEY } from '@/assets/js/constant.js'
+export default createDetailComponent('Album', ALBUM_KEY, getAlbum)
 </script>
 <style lang="scss" scoped>
   .album {

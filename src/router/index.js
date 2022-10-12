@@ -6,6 +6,17 @@ const routes = [
     redirect: '/recommend'
   },
   {
+    path: '/recommend',
+    name: 'Recommend',
+    component: () => import('../views/Recommend.vue'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('../views/Album.vue')
+      }
+    ]
+  },
+  {
     path: '/singer',
     name: 'Singer',
     component: () => import('../views/Singer.vue'),
@@ -20,11 +31,6 @@ const routes = [
     path: '/search',
     name: 'Search',
     component: () => import('../views/Search.vue')
-  },
-  {
-    path: '/recommend',
-    name: 'Recommend',
-    component: () => import('../views/Recommend.vue')
   },
   {
     path: '/top-list',

@@ -6,7 +6,10 @@
     <router-view v-slot="{ Component }">
       <!-- appear 一進入就有動畫 -->
       <transition appear name="slide">
-        <component :is="Component" :singer="selectedSinger"/>
+        <!-- v1: 未將SingerDetail script轉換成v2。 -->
+        <!-- <component :is="Component" :singer="selectedSinger"/> -->
+        <!-- v1: 將SingerDetail script以下功能轉換轉換成v2 create-detail-component.js 版本。 -->
+        <component :is="Component" :data="selectedSinger"/>
       </transition>
     </router-view>
   </div>
