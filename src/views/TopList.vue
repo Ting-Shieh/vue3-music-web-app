@@ -39,13 +39,15 @@ export default {
   },
   data () {
     return {
-      topList: []
+      topList: [],
+      loading: true
     }
   },
   methods: {},
   async created () {
     const result = await getTopList()
     this.topList = result.topList
+    this.loading = false
   }
 }
 </script>
