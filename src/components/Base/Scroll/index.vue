@@ -16,11 +16,12 @@ const props = defineProps({
     default: 0
   }
 })
-const emit = defineEmits(['scroll'])
+const emits = defineEmits(['scroll'])
 const rootRef = ref(null)
 // eslint-disable-next-line
-const scroll = useScroll(rootRef, props, emit)
-defineExpose({ scroll })
+const scroll = useScroll(rootRef, props, emits)
+// 因應改良高階組件WrapScroll :props, emits 暴露出去
+defineExpose({ scroll, props, emits })
 </script>
 <style lang="scss" scoped>
 

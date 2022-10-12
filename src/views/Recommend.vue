@@ -1,6 +1,10 @@
 <template>
   <div class="recommend" v-loading:[loadingText]="loading">
-    <base-scroll class="recommend-content">
+    <!--
+      base-scroll[版本1]: 非使用高階組件
+      wrap-scroll[版本2]: 使用高階組件
+    -->
+    <wrap-scroll class="recommend-content">
       <div class="">
         <div class="slider-wrapper">
             <div class="slider-content">
@@ -22,12 +26,13 @@
           </ul>
         </div>
       </div>
-    </base-scroll>
+    </wrap-scroll>
   </div>
 </template>
 <script setup>
 import { getRecommend } from '@/service/recommand.js'
-import BaseScroll from '@/components/Base/Scroll'
+import WrapScroll from '@/components/WrapScroll/index.js'
+// import BaseScroll from '@/components/Base/Scroll' // 非使用高階組件
 import BaseSlider from '@/components/Base/Slider'
 import { ref, computed } from 'vue'
 const sliders = ref([])

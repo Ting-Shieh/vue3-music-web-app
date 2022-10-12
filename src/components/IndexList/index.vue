@@ -1,5 +1,9 @@
 <template>
-  <base-scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef">
+  <!--
+    base-scroll[版本1]: 非使用高階組件
+    wrap-scroll[版本2]: 使用高階組件
+  -->
+  <wrap-scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef">
     <ul ref="groupRef">
       <li class="group" v-for="group in data" :key="group.title">
         <!-- 字幕排序 -->
@@ -35,10 +39,11 @@
         </li>
       </ul>
     </div>
-  </base-scroll>
+  </wrap-scroll>
 </template>
 <script setup>
-import BaseScroll from '@/components/Base/Scroll'
+import WrapScroll from '@/components/WrapScroll/index.js'
+// import BaseScroll from '@/components/Base/Scroll' // 非使用高階組件
 import useFixed from './useFixed.js'
 import useShortcut from './useShortcut.js'
 import { defineProps, defineEmits } from 'vue'

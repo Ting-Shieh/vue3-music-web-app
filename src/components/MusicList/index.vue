@@ -17,7 +17,7 @@
       <!-- 圖片蒙板 -->
       <div class="filter" :style="filterStyle"></div>
     </div>
-    <base-scroll
+    <wrap-scroll
       class="list"
       :style="scrollStyle"
       v-loading="loading"
@@ -28,19 +28,34 @@
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
-    </base-scroll>
+    </wrap-scroll>
+    <!-- 版本1: 非使用高階組件 -->
+    <!-- <base-scroll
+      class="list"
+      :style="scrollStyle"
+      v-loading="loading"
+      v-no-result:[noResultText]="noResult"
+      :probe-type="3"
+      @scroll="onScroll"
+    >
+      <div class="song-list-wrapper">
+        <song-list :songs="songs" @select="selectItem"></song-list>
+      </div>
+    </base-scroll> -->
   </div>
 </template>
 <script>
 import SongList from '@/components/Base/SongList'
-import BaseScroll from '@/components/Base/Scroll'
+import WrapScroll from '@/components/WrapScroll/index.js'
+// import BaseScroll from '@/components/Base/Scroll' // 非使用高階組件
 import { mapActions, mapState } from 'vuex'
 const RESERVED_HEIGHT = 40
 export default {
   name: 'MusicList',
   components: {
     SongList,
-    BaseScroll
+    // BaseScroll,
+    WrapScroll
   },
   props: {
     songs: {
