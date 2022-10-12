@@ -1,13 +1,34 @@
 <template>
   <div class="search-input">
     <i class="icon-search"></i>
-    <input type="text" class="input-item">
+    <input
+      class="input-inner"
+      v-model="query"
+    />
     <i class="icon-dismiss"></i>
   </div>
 </template>
 <script>
 export default {
-  name: 'SearchInput'
+  name: 'SearchInput',
+  props: {
+    // vue2 value: String
+    modelValue: String
+    // placeholder: {
+    //   type: String,
+    //   default: '搜尋歌曲、歌手'
+    // }
+  },
+  data () {
+    return {
+      query: this.modelValue
+    }
+  },
+  watch: {
+    query (newQuery) {
+      this.$emit('update:modelValue', newQuery.trim())
+    }
+  }
 }
 </script>
 
