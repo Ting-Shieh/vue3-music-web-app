@@ -17,7 +17,14 @@
       <!-- 圖片蒙板 -->
       <div class="filter" :style="filterStyle"></div>
     </div>
-    <base-scroll class="list" :style="scrollStyle" v-loading="loading" v-no-result:[noResultText]="noResult" :probe-type="3" @scroll="onScroll">
+    <base-scroll
+      class="list"
+      :style="scrollStyle"
+      v-loading="loading"
+      v-no-result:[noResultText]="noResult"
+      :probe-type="3"
+      @scroll="onScroll"
+    >
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
@@ -27,7 +34,7 @@
 <script>
 import SongList from '@/components/Base/SongList'
 import BaseScroll from '@/components/Base/Scroll'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 const RESERVED_HEIGHT = 40
 export default {
   name: 'MusicList',
@@ -58,6 +65,9 @@ export default {
     }
   },
   computed: {
+    ...mapState([
+      'playList'
+    ]),
     bgImageStyle () {
       // 默認背景層
       const scrollY = this.scrollY
@@ -87,8 +97,10 @@ export default {
       }
     },
     scrollStyle () {
+      const bottom = this.playList.length ? '60px' : '0'
       return {
-        top: `${this.imageHeight}px`
+        top: `${this.imageHeight}px`,
+        bottom
       }
     },
     filterStyle () {

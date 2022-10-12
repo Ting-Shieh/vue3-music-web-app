@@ -94,9 +94,6 @@ const currentSong = computed(() => store.getters.currentSong)
 const { modeIcon, modeText, changeMode } = useMode()
 const { getFavoriteIcon, toggleFavorite } = useFavorite()
 
-// computed
-// const modeIcon = computed(() => )
-
 // watch
 watch(currentSong, async (newSong) => {
   // 刪除歌曲點太快可能造成 !newSong.id
