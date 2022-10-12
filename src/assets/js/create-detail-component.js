@@ -19,6 +19,7 @@ export default function createDetailComponent (name, key, fetch) {
       computedData () {
         let ret = null
         const data = this.data
+        // debugger
         if (data) {
           // 點進來的
           ret = data
@@ -26,7 +27,8 @@ export default function createDetailComponent (name, key, fetch) {
           // 非點進來，像刷新
           const cached = JSON.parse(sessionStorage.getItem(key))
           console.log('$route.params:', this.$route.params)
-          if (cached && cached.mid === this.$route.params.id) {
+          // cached.id + '' : 數字轉換成字符串
+          if (cached && (cached.mid || cached.id + '') === this.$route.params.id) {
             // 當前頁刷新渲染
             ret = cached
           }
@@ -40,7 +42,7 @@ export default function createDetailComponent (name, key, fetch) {
       },
       title () {
         const data = this.computedData
-        return data && data.name
+        return data && (data.name || data.title)
       }
     },
     async created () {
