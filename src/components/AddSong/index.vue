@@ -4,7 +4,7 @@
       <div class="add-song" v-show="visible">
         <div class="header">
           <h1 class="title">添加歌曲到列表</h1>
-          <div class="close">
+          <div class="close" @click="hide">
             <i class="icon-close"></i>
           </div>
         </div>
@@ -19,13 +19,24 @@
   </teleport>
 </template>
 <script setup>
-import SearchInput from '@/component/SearchInput'
-import Suggest from '@/component/SearchInput/Suggest'
-import { ref } from 'vue'
+import SearchInput from '@/components/SearchInput'
+import Suggest from '@/components/SearchInput/Suggest.vue'
+import { ref, defineExpose } from 'vue'
 
 // data
 const query = ref('')
 const visible = ref(false)
+// vuex
+
+// computed
+// methods
+function show () {
+  visible.value = true
+}
+function hide () {
+  visible.value = false
+}
+defineExpose({ show })
 </script>
 <style lang="scss" scoped>
 .add-song {

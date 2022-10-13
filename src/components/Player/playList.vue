@@ -55,12 +55,21 @@
               </li>
             </transition-group>
           </base-scroll>
+          <!--  -->
+          <div class="list-add">
+            <div class="add" @click="showAddSong">
+              <i class="icon-add"></i>
+              <span class="text">添加歌曲到列表</span>
+            </div>
+          </div>
           <!-- 底部 -->
           <div class="list-footer" @click.stop="hide">
             <span>關閉</span>
           </div>
           <!-- Confirm -->
           <Confirm ref="confirmRef" :text="confirmText" confirmBtnText="清空" @confirm="confirmClear"/>
+          <!-- add-song -->
+          <add-song ref="addSongRef"/>
         </div>
       </div>
     </transition>
@@ -69,6 +78,7 @@
 <script setup>
 import BaseScroll from '@/components/Base/Scroll'
 import Confirm from '@/components/Base/Confirm'
+import AddSong from '@/components/AddSong'
 import useMode from './useMode.js'
 import useFavorite from './useFavorite.js'
 import { computed, ref, defineExpose, nextTick, watch } from 'vue'
@@ -83,7 +93,7 @@ const removing = ref(false) // 控制刪除
 const scrollRef = ref(null)
 const listRef = ref(null)
 const confirmRef = ref(null)
-
+const addSongRef = ref(null)
 // vuex
 const store = useStore()
 const sequenceList = computed(() => store.state.sequenceList)
@@ -174,6 +184,9 @@ const showConfirm = () => {
 const confirmClear = () => {
   store.dispatch('clearSongList')
   hide()
+}
+const showAddSong = () => {
+  addSongRef.value.show()
 }
 /** 主要給外部用 vue3 一定要爆露才能用ref拿到 */
 defineExpose({ show })
@@ -268,6 +281,25 @@ defineExpose({ show })
           &.disable {
             color: $color-theme-d;
           }
+        }
+      }
+    }
+    .list-add {
+      width: 140px;
+      margin: 20px auto 30px auto;
+      .add {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        border: 1px solid $color-text-l;
+        border-radius: 100px;
+        color: $color-text-l;
+        .icon-add {
+          margin-right: 5px;
+          font-size: $font-size-small-s;
+        }
+        .text {
+          font-size: $font-size-small;
         }
       }
     }
