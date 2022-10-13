@@ -56,12 +56,14 @@ const hasMore = ref(true) // 是否顯示更多
 const page = ref(1) // 頁碼
 const loadingText = ref('')
 const noResultText = ref('抱歉，暫時無法找到任何結果。')
-// hook
-const { rootRef, isPullUpLoad, scroll } = usePullUpLoad(searchMore)
+const manualLoading = ref(false)
 // computed
 const loading = computed(() => !singer.value && !songs.value.length)
 const noResult = computed(() => !singer.value && !songs.value.length && !hasMore.value)
 const pullUpLoading = computed(() => isPullUpLoad.value && hasMore.value)
+const preventPullUpLoad = computed(() => loading.value || manualLoading.value)
+// hook
+const { rootRef, isPullUpLoad, scroll } = usePullUpLoad(searchMore, preventPullUpLoad)
 // watch
 /**
  * https://blog.csdn.net/chencaw/article/details/121246917
@@ -78,6 +80,9 @@ watch(() => props.query, async (newQuery) => {
 // methods
 /** 重置 */
 const searchFirst = async () => {
+  if (!props.query) {
+    return
+  }
   page.value = 1
   songs.value = []
   singer.value = null
@@ -98,7 +103,7 @@ const searchFirst = async () => {
   hasMore.value = res.hasMore || true
 }
 async function searchMore () {
-  if (!hasMore.value) {
+  if (!hasMore.value || !props.query) {
     return
   }
   page.value++
@@ -111,9 +116,11 @@ async function searchMore () {
   await makeItScrollable()
 }
 async function makeItScrollable () {
+  // 不可滾動
   if (scroll.value.maxScrollY >= -1) {
-    // 不可滾動
+    manualLoading.value = true
     await searchMore()
+    manualLoading.value = false
   }
 }
 </script>

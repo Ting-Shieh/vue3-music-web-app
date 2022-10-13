@@ -4,7 +4,7 @@ import ObserveDOM from '@better-scroll/observe-dom'
 import { ref, onMounted, onUnmounted } from 'vue'
 BScroll.use(PullUp)
 BScroll.use(ObserveDOM)
-export default function usePullUpLoad (requestData) {
+export default function usePullUpLoad (requestData, preventPullUpLoad) {
   const scroll = ref(null)
   const rootRef = ref(null)
   const isPullUpLoad = ref(false)
@@ -19,6 +19,11 @@ export default function usePullUpLoad (requestData) {
     scrollVal.on('pullingUp', pullingUpHandler)
 
     async function pullingUpHandler () {
+      // 首次請求與 makeItScrollable()，不要觸發下拉加載
+      if (preventPullUpLoad.value) {
+        scrollVal.finishPullUp()
+        return
+      }
       isPullUpLoad.value = true
       // 由外部傳入實際請求
       await requestData()
