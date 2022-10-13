@@ -12,6 +12,10 @@
           </li>
         </ul>
       </div>
+      <div class="search-history" v-show="searchHistory.length">
+        <h1 class="title">搜索歷史</h1>
+        <search-list :searches="searchHistory"/>
+      </div>
     </div>
     <div class="search-result" v-show="query">
       <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"/>
@@ -29,9 +33,11 @@
 <script setup>
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest'
+import SearchList from '@/components/Base/SearchList'
 import { getHotKeys } from '@/service/search.js'
 import { SINGER_KEY } from '@/assets/js/constant.js'
-import { ref } from 'vue'
+import useSearchHistory from '@/components/SearchInput/useSearchHistory.js'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 // fake data
@@ -42,8 +48,11 @@ const hotKeys = ref([])
 const selectedSinger = ref(null)
 // vuex
 const store = useStore()
+const searchHistory = computed(() => store.state.searchHistory)
 // router
 const router = useRouter()
+// hooks
+const { saveSearch } = useSearchHistory()
 //
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
@@ -54,10 +63,12 @@ const addQuery = (key) => {
   query.value = key
 }
 const selectSong = (song) => {
+  saveSearch(query.value)
   // 派發action selectSinger
   store.dispatch('addSong', song)
 }
 const selectSinger = (singer) => {
+  saveSearch(query.value)
   selectedSinger.value = singer
   cacheSinger(singer)
   // 跳轉歌手詳情頁
@@ -103,6 +114,27 @@ const cacheSinger = (singer) => {
         background: $color-highlight-background;
         font-size: $font-size-medium;
         color: $color-text-d;
+      }
+    }
+    .search-history {
+      position: relative;
+      margin: 0 20px;
+      .title {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        font-size: $font-size-medium;
+        color: $color-text-l;
+        .text {
+          flex: 1;
+        }
+        .clear {
+          @include extend-click();
+          .icon-clear {
+            font-size: $font-size-medium;
+            color: $color-text-d;
+          }
+        }
       }
     }
   }
