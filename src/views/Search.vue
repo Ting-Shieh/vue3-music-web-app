@@ -14,8 +14,15 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query" @select-song="selectSong"/>
+      <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"/>
     </div>
+    <!-- 二級路由 -->
+    <router-view v-slot="{ Component }">
+      <!-- appear 一進入就有動畫 -->
+      <transition appear name="slide">
+        <component :is="Component" :data="selectedSinger"/>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -23,15 +30,20 @@
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest'
 import { getHotKeys } from '@/service/search.js'
+import { SINGER_KEY } from '@/assets/js/constant.js'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 // fake data
 const fakeData = [{ key: '张杰' }, { key: '125' }, { key: '789' }, { key: '658' }, { key: '55' }]
 // data
 const query = ref('')
 const hotKeys = ref([])
+const selectedSinger = ref(null)
 // vuex
 const store = useStore()
+// router
+const router = useRouter()
 //
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
@@ -42,8 +54,23 @@ const addQuery = (key) => {
   query.value = key
 }
 const selectSong = (song) => {
-  // 派發action
+  // 派發action selectSinger
   store.dispatch('addSong', song)
+}
+const selectSinger = (singer) => {
+  selectedSinger.value = singer
+  cacheSinger(singer)
+  // 跳轉歌手詳情頁
+  router.push({
+    path: `/search/${singer.mid}`
+  })
+}
+const cacheSinger = (singer) => {
+  /**
+   * 緩存對象
+   * JSON.stringify()  JSON.parse()
+   */
+  sessionStorage.setItem(SINGER_KEY, JSON.stringify(singer))
 }
 </script>
 <style lang="scss" scoped>

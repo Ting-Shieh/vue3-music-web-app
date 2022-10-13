@@ -6,7 +6,7 @@
     v-no-result:[noResultText]="noResult"
   >
     <ul class="suggest-list">
-      <li class="suggest-item" v-if="singer">
+      <li class="suggest-item" v-if="singer" @click="selectSinger(singer)">
         <div class="icon">
           <i class="icon-mine"></i>
         </div>
@@ -50,7 +50,7 @@ const props = defineProps({
   }
 })
 // emits
-const emit = defineEmits(['select-song'])
+const emit = defineEmits(['select-song', 'select-singer'])
 // data
 const singer = ref(null)
 const songs = ref([])
@@ -127,6 +127,9 @@ async function makeItScrollable () {
 }
 function selectSong (song) {
   emit('select-song', song)
+}
+function selectSinger (singer) {
+  emit('select-singer', singer)
 }
 </script>
 <style lang="scss" scoped>

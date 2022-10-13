@@ -28,6 +28,7 @@
         </li>
       </ul>
     </wrap-scroll>
+    <!-- 二級路由 -->
     <router-view v-slot="{ Component }">
       <!-- appear 一進入就有動畫 -->
       <transition appear name="slide">
