@@ -80,3 +80,8 @@ export function load (key) {
   // return JSON.parse(localStorage.getItem(key))
   return getLocalStorageNullAndSetDefault(key)
 }
+
+export function clear (key) {
+  localStorage.removeItem(key)
+  return []
+}

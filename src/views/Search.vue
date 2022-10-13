@@ -14,7 +14,19 @@
           </ul>
         </div>
         <div class="search-history" v-show="searchHistory.length">
-          <h1 class="title">搜索歷史</h1>
+          <h1 class="title">
+            <span class="text">搜索歷史</span>
+            <span class="clear" @click="showConfirm">
+              <i class="icon-clear"></i>
+            </span>
+          </h1>
+          <Confirm
+            ref="confirmRef"
+            text="是否清空所有搜索歷史"
+            confirm-btn-text="清空"
+            @confirm="clearSearch"
+          >
+          </Confirm>
           <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"/>
         </div>
       </div>
@@ -34,6 +46,7 @@
 
 <script setup>
 import WrapScroll from '@/components/WrapScroll'
+import Confirm from '@/components/Base/Confirm'
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest'
 import SearchList from '@/components/Base/SearchList'
@@ -50,13 +63,14 @@ const query = ref('')
 const hotKeys = ref([])
 const selectedSinger = ref(null)
 const scrollRef = ref(null)
+const confirmRef = ref(null)
 // vuex
 const store = useStore()
 const searchHistory = computed(() => store.state.searchHistory)
 // router
 const router = useRouter()
 // hooks
-const { saveSearch, deleteSearch } = useSearchHistory()
+const { saveSearch, deleteSearch, clearSearch } = useSearchHistory()
 //
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
@@ -96,6 +110,9 @@ function cacheSinger (singer) {
 }
 function reFreshScroll () {
   scrollRef.value.scroll.refresh()
+}
+function showConfirm () {
+  confirmRef.value.show()
 }
 </script>
 <style lang="scss" scoped>
