@@ -3,20 +3,22 @@
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
-    <div class="search-content" v-show="!query">
-      <div class="hot-keys">
-        <h1 class="title">熱門搜索</h1>
-        <ul>
-          <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
-            <span>{{item.key}}</span>
-          </li>
-        </ul>
+    <wrap-scroll ref="scrollRef" class="search-content" v-show="!query">
+      <div class="">
+        <div class="hot-keys">
+          <h1 class="title">熱門搜索</h1>
+          <ul>
+            <li class="item" v-for="item in hotKeys" :key="item.id" @click="addQuery(item.key)">
+              <span>{{item.key}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">搜索歷史</h1>
+          <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"/>
+        </div>
       </div>
-      <div class="search-history" v-show="searchHistory.length">
-        <h1 class="title">搜索歷史</h1>
-        <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"/>
-      </div>
-    </div>
+    </wrap-scroll>
     <div class="search-result" v-show="query">
       <suggest :query="query" @select-song="selectSong" @select-singer="selectSinger"/>
     </div>
@@ -31,13 +33,14 @@
 </template>
 
 <script setup>
+import WrapScroll from '@/components/WrapScroll'
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest'
 import SearchList from '@/components/Base/SearchList'
 import { getHotKeys } from '@/service/search.js'
 import { SINGER_KEY } from '@/assets/js/constant.js'
 import useSearchHistory from '@/components/SearchInput/useSearchHistory.js'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 // fake data
@@ -46,6 +49,7 @@ const fakeData = [{ key: '张杰' }, { key: '125' }, { key: '789' }, { key: '658
 const query = ref('')
 const hotKeys = ref([])
 const selectedSinger = ref(null)
+const scrollRef = ref(null)
 // vuex
 const store = useStore()
 const searchHistory = computed(() => store.state.searchHistory)
@@ -57,6 +61,13 @@ const { saveSearch, deleteSearch } = useSearchHistory()
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
   hotKeys.value = res && res.hotKeys ? res.hotKeys : fakeData
+})
+// watch
+watch(query, async (newQuery) => {
+  if (!newQuery) {
+    await nextTick()
+    reFreshScroll()
+  }
 })
 // methods
 const addQuery = (key) => {
@@ -76,12 +87,15 @@ const selectSinger = (singer) => {
     path: `/search/${singer.mid}`
   })
 }
-const cacheSinger = (singer) => {
+function cacheSinger (singer) {
   /**
    * 緩存對象
    * JSON.stringify()  JSON.parse()
    */
   sessionStorage.setItem(SINGER_KEY, JSON.stringify(singer))
+}
+function reFreshScroll () {
+  scrollRef.value.scroll.refresh()
 }
 </script>
 <style lang="scss" scoped>
