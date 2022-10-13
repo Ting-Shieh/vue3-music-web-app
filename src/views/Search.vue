@@ -3,7 +3,7 @@
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
-    <div class="search-content">
+    <div class="search-content" v-show="!query">
       <div class="hot-keys">
         <h1 class="title">熱門搜索</h1>
         <ul>
@@ -13,19 +13,22 @@
         </ul>
       </div>
     </div>
+    <div class="search-result" v-show="query">
+      <suggest :query="query"/>
+    </div>
   </div>
 </template>
 
 <script setup>
 import SearchInput from '@/components/SearchInput'
+import Suggest from '@/components/SearchInput/Suggest'
 import { getHotKeys } from '@/service/search.js'
 import { ref } from 'vue'
 // fake data
-const fakeData = [{ key: '123' }, { key: '125' }, { key: '789' }, { key: '658' }, { key: '55' }]
+const fakeData = [{ key: '张杰' }, { key: '125' }, { key: '789' }, { key: '658' }, { key: '55' }]
 // data
 const query = ref('')
 const hotKeys = ref([])
-
 //
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
