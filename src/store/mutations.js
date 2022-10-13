@@ -28,6 +28,10 @@ const mutations = {
   setFavoriteList (state, list) {
     state.favoriteList = list
   },
+  // 設置搜索歷史紀錄
+  setSearchHistory (state, list) {
+    state.searchHistory = list
+  },
   /**
    * 添加歌詞
    * playList, sequenceList 都會有lyric
