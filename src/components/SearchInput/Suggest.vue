@@ -1,8 +1,9 @@
 <template>
   <div
-  class="suggest"
-  v-loading:[loadingText]="loading"
-  v-no-result:[noResultText]="noResult"
+    ref="rootRef"
+    class="suggest"
+    v-loading:[loadingText]="loading"
+    v-no-result:[noResultText]="noResult"
   >
     <ul class="suggest-list">
       <li class="suggest-item" v-if="singer">
@@ -27,12 +28,17 @@
           </p>
         </div>
       </li>
+      <div
+        class="suggest-item"
+        v-loading:[loadingText]="pullUpLoading"
+      ></div>
     </ul>
   </div>
 </template>
 <script setup>
-// import { processSongs } from '@/service/song.js'
+import { processSongs } from '@/service/song.js'
 import { search } from '@/service/search.js'
+import usePullUpLoad from './usePullUpLoad.js'
 import { ref, defineProps, watch, computed } from 'vue'
 // 之後添加歌曲時，支持用戶作搜索
 const props = defineProps({
@@ -50,9 +56,12 @@ const hasMore = ref(true) // 是否顯示更多
 const page = ref(1) // 頁碼
 const loadingText = ref('')
 const noResultText = ref('抱歉，暫時無法找到任何結果。')
+// hook
+const { rootRef, isPullUpLoad } = usePullUpLoad(searchMore)
 // computed
 const loading = computed(() => !singer.value && !songs.value.length)
 const noResult = computed(() => !singer.value && !songs.value.length && !hasMore.value)
+const pullUpLoading = computed(() => isPullUpLoad.value && hasMore.value)
 // watch
 /**
  * https://blog.csdn.net/chencaw/article/details/121246917
@@ -84,8 +93,20 @@ const searchFirst = async () => {
     songs.value = []
   }
   singer.value = res.singer || null
-  hasMore.value = res.hasMore || false
+  hasMore.value = res.hasMore || true
 }
+async function searchMore () {
+  if (!hasMore.value) {
+    return
+  }
+  page.value++
+  // real api
+  const res = await search(props.query, page.value, props.showSinger)
+  // 數據拼接
+  songs.value = songs.value.concat(await processSongs(res.songs))
+  hasMore.value = res.hasMore
+}
+
 </script>
 <style lang="scss" scoped>
 .suggest {
