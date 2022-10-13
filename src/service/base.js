@@ -4,6 +4,7 @@ const ERR_OK = 0
 const baseURL = process.env.NODE_ENV === 'production' ? 'http://ustbhuangyi.com/music-next/' : '/'
 
 axios.defaults.baseURL = baseURL
+axios.defaults.timeout = 5000
 /**
  * https://www.jianshu.com/p/5ab5d69d544a
  * 詭異方法解決 sockjs-node/info?t=****

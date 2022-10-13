@@ -1,5 +1,9 @@
 <template>
-  <div class="suggest" v-loading:[loadingText]="!singer && !songs.length">
+  <div
+  class="suggest"
+  v-loading:[loadingText]="loading"
+  v-no-result:[noResultText]="noResult"
+  >
     <ul class="suggest-list">
       <li class="suggest-item" v-if="singer">
         <div class="icon">
@@ -27,9 +31,9 @@
   </div>
 </template>
 <script setup>
-import { processSongs } from '@/service/song.js'
+// import { processSongs } from '@/service/song.js'
 import { search } from '@/service/search.js'
-import { ref, defineProps, watch } from 'vue'
+import { ref, defineProps, watch, computed } from 'vue'
 // 之後添加歌曲時，支持用戶作搜索
 const props = defineProps({
   query: String,
@@ -45,8 +49,10 @@ const songs = ref([])
 const hasMore = ref(true) // 是否顯示更多
 const page = ref(1) // 頁碼
 const loadingText = ref('')
+const noResultText = ref('抱歉，暫時無法找到任何結果。')
 // computed
-
+const loading = computed(() => !singer.value && !songs.value.length)
+const noResult = computed(() => !singer.value && !songs.value.length && !hasMore.value)
 // watch
 /**
  * https://blog.csdn.net/chencaw/article/details/121246917
@@ -67,11 +73,18 @@ const searchFirst = async () => {
   songs.value = []
   singer.value = null
   hasMore.value = true
+  // // real
+  // const res = await search(props.query, page.value, props.showSinger)
+  // songs.value = await processSongs(res.songs)
+  // singer.value = res.singer
+  // hasMore.value = res.hasMore
   // api
-  const res = await search(props.query, page.value, props.showSinger)
-  songs.value = await processSongs(res.songs)
-  singer.value = res.singer
-  hasMore.value = res.hasMore
+  const res = await search(props.query, page.value, props.showSinger) || {}
+  if (res === undefined) {
+    songs.value = []
+  }
+  singer.value = res.singer || null
+  hasMore.value = res.hasMore || false
 }
 </script>
 <style lang="scss" scoped>
