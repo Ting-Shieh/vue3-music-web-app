@@ -39,7 +39,7 @@
 import { processSongs } from '@/service/song.js'
 import { search } from '@/service/search.js'
 import usePullUpLoad from './usePullUpLoad.js'
-import { ref, defineProps, watch, computed } from 'vue'
+import { ref, defineProps, watch, computed, nextTick } from 'vue'
 // 之後添加歌曲時，支持用戶作搜索
 const props = defineProps({
   query: String,
@@ -57,7 +57,7 @@ const page = ref(1) // 頁碼
 const loadingText = ref('')
 const noResultText = ref('抱歉，暫時無法找到任何結果。')
 // hook
-const { rootRef, isPullUpLoad } = usePullUpLoad(searchMore)
+const { rootRef, isPullUpLoad, scroll } = usePullUpLoad(searchMore)
 // computed
 const loading = computed(() => !singer.value && !songs.value.length)
 const noResult = computed(() => !singer.value && !songs.value.length && !hasMore.value)
@@ -82,12 +82,14 @@ const searchFirst = async () => {
   songs.value = []
   singer.value = null
   hasMore.value = true
-  // // real
+  // // real api
   // const res = await search(props.query, page.value, props.showSinger)
   // songs.value = await processSongs(res.songs)
   // singer.value = res.singer
   // hasMore.value = res.hasMore
-  // api
+  // await nextTick()
+  // await makeItScrollable()
+  // fake api
   const res = await search(props.query, page.value, props.showSinger) || {}
   if (res === undefined) {
     songs.value = []
@@ -105,8 +107,15 @@ async function searchMore () {
   // 數據拼接
   songs.value = songs.value.concat(await processSongs(res.songs))
   hasMore.value = res.hasMore
+  await nextTick()
+  await makeItScrollable()
 }
-
+async function makeItScrollable () {
+  if (scroll.value.maxScrollY >= -1) {
+    // 不可滾動
+    await searchMore()
+  }
+}
 </script>
 <style lang="scss" scoped>
 .suggest {
