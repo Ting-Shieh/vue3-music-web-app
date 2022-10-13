@@ -14,7 +14,7 @@
       </div>
       <div class="search-history" v-show="searchHistory.length">
         <h1 class="title">搜索歷史</h1>
-        <search-list :searches="searchHistory"/>
+        <search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearch"/>
       </div>
     </div>
     <div class="search-result" v-show="query">
@@ -52,7 +52,7 @@ const searchHistory = computed(() => store.state.searchHistory)
 // router
 const router = useRouter()
 // hooks
-const { saveSearch } = useSearchHistory()
+const { saveSearch, deleteSearch } = useSearchHistory()
 //
 getHotKeys().then((res) => {
   console.log('getHotKeys:', res)
