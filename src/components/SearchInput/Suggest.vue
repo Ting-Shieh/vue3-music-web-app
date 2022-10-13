@@ -18,6 +18,7 @@
         class="suggest-item"
         v-for="song in songs"
         :key="song.id"
+        @click="selectSong(song)"
       >
         <div class="icon">
           <i class="icon-music"></i>
@@ -39,7 +40,7 @@
 import { processSongs } from '@/service/song.js'
 import { search } from '@/service/search.js'
 import usePullUpLoad from './usePullUpLoad.js'
-import { ref, defineProps, watch, computed, nextTick } from 'vue'
+import { ref, defineProps, watch, computed, nextTick, defineEmits } from 'vue'
 // 之後添加歌曲時，支持用戶作搜索
 const props = defineProps({
   query: String,
@@ -48,7 +49,8 @@ const props = defineProps({
     default: true
   }
 })
-
+// emits
+const emit = defineEmits(['select-song'])
 // data
 const singer = ref(null)
 const songs = ref([])
@@ -122,6 +124,9 @@ async function makeItScrollable () {
     await searchMore()
     manualLoading.value = false
   }
+}
+function selectSong (song) {
+  emit('select-song', song)
 }
 </script>
 <style lang="scss" scoped>

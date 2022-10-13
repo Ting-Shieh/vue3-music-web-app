@@ -104,3 +104,34 @@ export function clearSongList ({ commit }) {
 function findArrayIndex (list, song) {
   return list.findIndex(item => item.id === song.id)
 }
+
+export function addSong ({ commit, state }, song) {
+  // 獲得副本 => vuex 修改state 一釘得用提交mutations方式
+  const sequenceList = state.sequenceList.slice()
+  const playList = state.playList.slice()
+  //
+  let currentIndex = state.currentIndex
+  // 是否該歌曲已存在 playList
+  const playIndex = findArrayIndex(playList, song)
+  if (playIndex > -1) {
+    // 存在
+    currentIndex = playIndex
+  } else {
+    // 不存在，往列表添加元素(最後添加)
+    playList.push(song)
+    // 指向最後一首歌
+    currentIndex = playList.length - 1
+  }
+  // 是否該歌曲已存在 sequenceList
+  const sequenceIndex = findArrayIndex(sequenceList, song)
+  if (sequenceIndex === -1) {
+    // 不存在
+    sequenceList.push(song)
+  }
+  // 提交
+  commit('setSequenceList', sequenceList)
+  commit('setPlayList', playList)
+  commit('setCurrentIndex', currentIndex)
+  commit('setPlayingState', true)
+  commit('setFullScreen', true)
+}
