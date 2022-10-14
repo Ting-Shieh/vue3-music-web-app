@@ -11,6 +11,10 @@
         <div class="search-input-wrapper">
           <search-input v-model="query" placeholder="搜索歌曲"></search-input>
         </div>
+        <!-- v-show="!query" -->
+        <div >
+          <Switches :items="['Tab1','Tab2']"/>
+        </div>
         <div class="search-result" v-show="query">
           <suggest :show-singer="false" :query="query"></suggest>
         </div>
@@ -21,6 +25,7 @@
 <script setup>
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest.vue'
+import Switches from '@/components/Base/Switches'
 import { ref, defineExpose } from 'vue'
 
 // data
