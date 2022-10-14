@@ -18,17 +18,17 @@
         <div class="list-wrapper">
           <base-scroll ref="scrollRef" v-if="currentIndex === 0" class="list-scroll">
             <div class="list-inner">
-              <song-list :songs="playHistory"></song-list>
+              <song-list :songs="playHistory" @select="selectSongBySongList"></song-list>
             </div>
           </base-scroll>
           <base-scroll ref="scrollRef" v-if="currentIndex === 1" class="list-scroll">
             <div class="list-inner">
-              <search-list :searches="searchHistory" :show-delete="false"></search-list>
+              <search-list :searches="searchHistory" :show-delete="false" @select="addQuery"></search-list>
             </div>
           </base-scroll>
         </div>
         <div class="search-result" v-show="query">
-          <suggest :show-singer="false" :query="query"></suggest>
+          <suggest :show-singer="false" :query="query" :select-song="selectSongBySuggest"></suggest>
         </div>
       </div>
     </transition>
@@ -44,6 +44,7 @@ import BaseScroll from '@/components/Base/Scroll'
 import { COMMON_STR } from '@/assets/js/constant.js'
 import { ref, defineExpose, computed } from 'vue'
 import { useStore } from 'vuex'
+import useSearchHistory from '@/components/SearchInput/useSearchHistory.js'
 // data
 const query = ref('')
 const visible = ref(false)
@@ -52,13 +53,27 @@ const currentIndex = ref(0)
 const store = useStore()
 const searchHistory = computed(() => store.state.searchHistory)
 const playHistory = computed(() => store.state.playHistory)
-// computed
+// hooks
+const { saveSearch } = useSearchHistory()
 // methods
 function show () {
   visible.value = true
 }
 function hide () {
   visible.value = false
+}
+function addQuery (s) {
+  query.value = s
+}
+function selectSongBySongList ({ song }) {
+  addSong(song)
+}
+function addSong (song) {
+  store.dispatch('addSong', song)
+}
+function selectSongBySuggest (song) {
+  addSong(song)
+  saveSearch(query.value)
 }
 defineExpose({ show })
 </script>
