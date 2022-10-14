@@ -1,7 +1,15 @@
 <template>
   <m-header />
   <tab />
+  <!-- 使用命名視圖 -->
   <router-view :style="viewStyle"></router-view>
+  <!-- v2 -->
+  <router-view name="user" :style="viewStyle" v-slot="{ Component }">
+      <!-- appear 一進入就有動畫 -->
+      <transition appear name="slide">
+        <component :is="Component"/>
+      </transition>
+    </router-view>
   <!-- 全局組件 -->
   <player></player>
 </template>

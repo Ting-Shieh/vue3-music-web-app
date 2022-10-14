@@ -52,7 +52,11 @@ const routes = [
   {
     path: '/user',
     name: 'User',
-    component: () => import('../views/UserCenter.vue')
+    components: {
+      // key name 來自 App.vue router-view name="user"
+      user: () => import('../views/UserCenter.vue')
+    }
+    // component: () => import('../views/UserCenter.vue')
   }
 ]
 
