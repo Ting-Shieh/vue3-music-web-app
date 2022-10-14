@@ -30,7 +30,7 @@
         <div class="search-result" v-show="query">
           <suggest :show-singer="false" :query="query" :select-song="selectSongBySuggest"></suggest>
         </div>
-        <message-comp>
+        <message-comp ref="messageRef">
           <div class="message-title">
             <i class="icon-ok"></i>
             <span class="text">1首歌已經添加至撥放列表</span>
@@ -57,6 +57,7 @@ const query = ref('')
 const visible = ref(false)
 const currentIndex = ref(0)
 const scrollRef = ref(null)
+const messageRef = ref(null)
 // vuex
 const store = useStore()
 const searchHistory = computed(() => store.state.searchHistory)
@@ -88,10 +89,14 @@ function selectSongBySongList ({ song }) {
 }
 function addSong (song) {
   store.dispatch('addSong', song)
+  showMessage()
 }
 function selectSongBySuggest (song) {
   addSong(song)
   saveSearch(query.value)
+}
+function showMessage () {
+  messageRef.value.show()
 }
 defineExpose({ show })
 </script>

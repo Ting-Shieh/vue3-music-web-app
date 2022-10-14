@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <transition name="slide-down">
-      <div class="message" v-show="visible">
+      <div class="message" v-show="visible" @click="hide">
         <slot></slot>
       </div>
     </transition>
@@ -11,9 +11,28 @@
 <script>
 export default {
   name: 'Message',
+  props: {
+    delay: {
+      type: Number,
+      default: 4000
+    }
+  },
   data () {
     return {
       visible: false
+    }
+  },
+  methods: {
+    show () {
+      this.visible = true
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.hide()
+      }, this.delay)
+    },
+    hide () {
+      clearTimeout(this.timer)
+      this.visible = false
     }
   }
 }
