@@ -22,13 +22,14 @@ export default function useSlider (wrapperRef) {
   onUnmounted(() => {
     slider.value.destroy()
   })
+  // ===== Start使用keep-alive 組件 ========
   onActivated(() => {
     slider.value.enable()
     slider.value.refresh()
   })
-
   onDeactivated(() => {
     slider.value.disable()
   })
+  // ===== End 使用keep-alive 組件 ========
   return { slider, currentPageIndex }
 }

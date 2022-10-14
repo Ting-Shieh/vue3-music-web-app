@@ -24,6 +24,7 @@ export default function useScroll (wrapperRef, options, emit) {
   onUnmounted(() => {
     scroll.value.destroy()
   })
+  // ===== Start使用keep-alive 組件 ========
   onActivated(() => {
     scroll.value.enable()
     scroll.value.refresh()
@@ -32,5 +33,6 @@ export default function useScroll (wrapperRef, options, emit) {
   onDeactivated(() => {
     scroll.value.disable()
   })
+  // ===== End 使用keep-alive 組件 ========
   return scroll
 }
