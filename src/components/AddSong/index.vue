@@ -13,7 +13,19 @@
         </div>
         <!-- v-show="!query" -->
         <div >
-          <Switches :items="['Tab1','Tab2']"/>
+          <Switches v-model="currentIndex" :items="COMMON_STR.switches_options"/>
+        </div>
+        <div class="list-wrapper">
+          <base-scroll ref="scrollRef" v-if="currentIndex === 0" class="list-scroll">
+            <div class="list-inner">
+              <song-list :songs="playHistory"></song-list>
+            </div>
+          </base-scroll>
+          <base-scroll ref="scrollRef" v-if="currentIndex === 1" class="list-scroll">
+            <div class="list-inner">
+              <search-list :searches="searchHistory" :show-delete="false"></search-list>
+            </div>
+          </base-scroll>
         </div>
         <div class="search-result" v-show="query">
           <suggest :show-singer="false" :query="query"></suggest>
@@ -26,13 +38,20 @@
 import SearchInput from '@/components/SearchInput'
 import Suggest from '@/components/SearchInput/Suggest.vue'
 import Switches from '@/components/Base/Switches'
-import { ref, defineExpose } from 'vue'
-
+import SongList from '@/components/Base/SongList'
+import SearchList from '@/components/Base/SearchList'
+import BaseScroll from '@/components/Base/Scroll'
+import { COMMON_STR } from '@/assets/js/constant.js'
+import { ref, defineExpose, computed } from 'vue'
+import { useStore } from 'vuex'
 // data
 const query = ref('')
 const visible = ref(false)
+const currentIndex = ref(0)
 // vuex
-
+const store = useStore()
+const searchHistory = computed(() => store.state.searchHistory)
+const playHistory = computed(() => store.state.playHistory)
 // computed
 // methods
 function show () {
@@ -74,6 +93,19 @@ defineExpose({ show })
   }
   .search-input-wrapper {
     margin: 20px
+  }
+  .list-wrapper {
+    position: absolute;
+    top: 165px;
+    bottom: 0;
+    width: 100%;
+    .list-scroll {
+      height: 100%;
+      overflow: hidden;
+      .list-inner {
+        padding: 20px 30px;
+      }
+    }
   }
   .search-result {
     position: fixed;

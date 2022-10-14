@@ -32,6 +32,10 @@ const mutations = {
   setSearchHistory (state, list) {
     state.searchHistory = list
   },
+  // 設置播放歷史
+  setPlayHistory (state, list) {
+    state.playHistory = list
+  },
   /**
    * 添加歌詞
    * playList, sequenceList 都會有lyric
