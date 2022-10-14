@@ -10,5 +10,6 @@ export const PLAY_MODE = {
   random: 2 // 隨機
 }
 export const COMMON_STR = {
-  switches_options: ['最近播放', '搜索歷史']
+  switches_options: ['最近播放', '搜索歷史'],
+  user_switches_options: ['我喜歡的', '最近播放']
 }
