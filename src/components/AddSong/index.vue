@@ -30,6 +30,12 @@
         <div class="search-result" v-show="query">
           <suggest :show-singer="false" :query="query" :select-song="selectSongBySuggest"></suggest>
         </div>
+        <message-comp>
+          <div class="message-title">
+            <i class="icon-ok"></i>
+            <span class="text">1首歌已經添加至撥放列表</span>
+          </div>
+        </message-comp>
       </div>
     </transition>
   </teleport>
@@ -41,6 +47,7 @@ import Switches from '@/components/Base/Switches'
 import SongList from '@/components/Base/SongList'
 import SearchList from '@/components/Base/SearchList'
 import BaseScroll from '@/components/Base/Scroll'
+import MessageComp from '@/components/Base/Message'
 import { COMMON_STR } from '@/assets/js/constant.js'
 import { ref, defineExpose, computed, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
@@ -138,6 +145,20 @@ defineExpose({ show })
     top: 124px;
     bottom: 0;
     width: 100%;
+  }
+}
+.message-title {
+  text-align: center;
+  padding: 18px 0;
+  font-size: 0;
+  .icon-ok {
+    font-size: $font-size-medium;
+    color: $color-theme;
+    margin-right: 4px;
+  }
+  .text {
+    font-size: $font-size-medium;
+    color: $color-text;
   }
 }
 </style>
