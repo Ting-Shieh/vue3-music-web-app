@@ -48,6 +48,11 @@ const routes = [
         component: () => import('../views/TopDetail.vue')
       }
     ]
+  },
+  {
+    path: '/user',
+    name: 'User',
+    component: () => import('../views/UserCenter.vue')
   }
 ]
 

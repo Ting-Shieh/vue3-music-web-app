@@ -1,6 +1,6 @@
 <template>
-  <div class="user-center">
-    <div class="back">
+  <div class="user-center" v-no-result:[noResultText]="noResult">
+    <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
     <div class="switches-wrapper">
@@ -9,19 +9,19 @@
         v-model="currentIndex"
       ></Switches>
     </div>
-    <div class="play-btn">
+    <div class="play-btn" v-if="currenList.length" @click="random">
       <i class="icon-play"></i>
       <span class="text">隨機播放全部</span>
     </div>
     <div class="list-wrapper">
       <wrap-scroll class="list-scroll" v-if="currentIndex===0">
         <div class="list-inner">
-          <song-list :songs="favoriteList"></song-list>
+          <song-list :songs="favoriteList" @select="selectSong"></song-list>
         </div>
       </wrap-scroll>
       <wrap-scroll class="list-scroll" v-if="currentIndex===1">
         <div class="list-inner">
-          <song-list :songs="playHistory"></song-list>
+          <song-list :songs="playHistory" @select="selectSong"></song-list>
         </div>
       </wrap-scroll>
     </div>
@@ -32,7 +32,7 @@ import Switches from '@/components/Base/Switches'
 import SongList from '@/components/Base/SongList'
 import WrapScroll from '@/components/WrapScroll/index.js'
 import { COMMON_STR } from '@/assets/js/constant.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'UserCenter',
   components: {
@@ -50,9 +50,29 @@ export default {
     ...mapState([
       'favoriteList',
       'playHistory'
-    ])
+    ]),
+    noResult () {
+      return this.currentIndex === 0 ? !this.favoriteList.length : !this.playHistory.length
+    },
+    noResultText () {
+      return this.currentIndex === 0 ? '暫無蒐藏歌曲' : '你還沒有聽過任何一首歌'
+    },
+    currenList () {
+      return this.currentIndex === 0 ? this.favoriteList : this.playHistory
+    }
   },
-  methods: {}
+  methods: {
+    back () {
+      this.$router.back()
+    },
+    selectSong ({ song }) {
+      this.addSong(song)
+    },
+    random () {
+      this.randomPlay(this.currenList)
+    },
+    ...mapActions(['addSong', 'randomPlay'])
+  }
 }
 </script>
 
