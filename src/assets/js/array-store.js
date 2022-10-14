@@ -88,3 +88,7 @@ export function clear (key) {
   localStorage.removeItem(key)
   return []
 }
+
+export function saveAll (items, key) {
+  localStorage.setItem(key, JSON.stringify(items))
+}
