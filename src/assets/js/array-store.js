@@ -13,9 +13,12 @@ function getLocalStorageNullAndSetDefault (key, defaultVal = []) {
 
 function insertArray (arr, val, compare, maxLen) {
   const index = arr.findIndex(compare)
-  if (index > -1) {
-    // 存在
+  // 存在
+  if (index === 0) {
     return
+  }
+  if (index > 0) {
+    arr.splice(index, 1)
   }
   // 插入前面
   arr.unshift(val)

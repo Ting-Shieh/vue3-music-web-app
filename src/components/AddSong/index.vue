@@ -42,25 +42,36 @@ import SongList from '@/components/Base/SongList'
 import SearchList from '@/components/Base/SearchList'
 import BaseScroll from '@/components/Base/Scroll'
 import { COMMON_STR } from '@/assets/js/constant.js'
-import { ref, defineExpose, computed } from 'vue'
+import { ref, defineExpose, computed, nextTick, watch } from 'vue'
 import { useStore } from 'vuex'
 import useSearchHistory from '@/components/SearchInput/useSearchHistory.js'
 // data
 const query = ref('')
 const visible = ref(false)
 const currentIndex = ref(0)
+const scrollRef = ref(null)
 // vuex
 const store = useStore()
 const searchHistory = computed(() => store.state.searchHistory)
 const playHistory = computed(() => store.state.playHistory)
 // hooks
 const { saveSearch } = useSearchHistory()
+// watch
+watch(query, async () => {
+  await nextTick()
+  refreshScroll()
+})
 // methods
-function show () {
+async function show () {
   visible.value = true
+  await nextTick()
+  refreshScroll()
 }
 function hide () {
   visible.value = false
+}
+function refreshScroll () {
+  scrollRef.value.scroll.refresh()
 }
 function addQuery (s) {
   query.value = s
